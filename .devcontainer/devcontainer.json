@@ -1,0 +1,13 @@
+{
+    "name": "webapp-dev",
+    "build": {
+        "dockerfile": "../docker/dev.Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bourhaouta.tailwindshades"
+            ]
+        }
+    }
+}
