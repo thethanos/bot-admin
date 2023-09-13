@@ -197,7 +197,8 @@ function Sidebar() {
                     <Box paddingLeft={isCollapsed?undefined:"10%"}>
                         {
                             MainItems && MainItems.map((item) => (
-                                <Item 
+                                <Item
+                                    key={item.title} 
                                     title={item.title}
                                     to={item.to}
                                     icon={<item.icon />}
@@ -207,6 +208,7 @@ function Sidebar() {
                             ))
                         }
                         <Item
+                            key={DashboardItem.title}
                             title={DashboardItem.title}
                             to={DashboardItem.to}
                             icon={<DashboardItem.icon />}
@@ -221,6 +223,7 @@ function Sidebar() {
                         {
                             DataItems && DataItems.map((item) => (
                                 <Item 
+                                    key={item.title} 
                                     title={item.title}
                                     to={item.to}
                                     icon={<item.icon />}
@@ -237,6 +240,7 @@ function Sidebar() {
                         {
                             PagesItems && PagesItems.map((item) => (
                                 <Item 
+                                    key={item.title} 
                                     title={item.title}
                                     to={item.to}
                                     icon={<item.icon />}
@@ -253,6 +257,7 @@ function Sidebar() {
                         {
                             ChartsItems && ChartsItems.map((item) => (
                                 <Item 
+                                    key={item.title} 
                                     title={item.title}
                                     to={item.to}
                                     icon={<item.icon />}
