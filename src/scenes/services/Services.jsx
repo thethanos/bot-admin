@@ -1,37 +1,31 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { Box, useTheme } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { getColors } from "../../theme";
-import Header from "../../components/Header";
 
-function Masters() {
+import { Box, useTheme } from "@mui/material";
+import { DataGrid, GridToolbar} from "@mui/x-data-grid";
+
+import Header from "../../components/Header";
+import { getColors } from "../../theme";
+
+function Services() {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
     const columns = [
-        { field: "id"},
-        { field: "name", headerName: "ФИО", flex: 1},
-        { field: "cityName", headerName: "Город", flex: 1},
-        { field: "servCatName", headerName: "Услуги", flex: 1},
-        { field: "regDate", headerName: "Дата", flex: 0.5}
+        {field: "id"},
+        {filed: "servCatName", headerName: "Категория", flex: 1},
+        {field: "servName", headerName: "Услуга", flex: 1}
     ];
 
-    const [masters, setMasters] = useState([]);
-    useEffect(()=>{
-        fetch("https://bot-dev-domain.com:444/masters")
-            .then(response => response.json()) 
-            .then(data => {
-                setMasters(data);
-            })
-    }, []);
+    const services = [
+        {"id" : "123", "name" : "example"}
+    ];
 
-    return (
+    return(
         <Box m="20px">
-            <Header title="Мастер" subtitle="Список мастеров зарегистрированных в системе" />
-            <Box height="75vh" 
+            <Header title="Услуга" subtitle="Список услуг доступных в системе" />
+            <Box height="75vh"
                 sx={{
-                    "& .MuiDataGrid-root": {
+                    "& .MuiDataGrid--root":{
                         border: "none"
                     },
                     "& .MuiDataGrid-cell": {
@@ -51,10 +45,11 @@ function Masters() {
                     "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                         color: `${colors.grey[100]} !important`
                     }
-            }}>
-                <DataGrid 
+                }}
+            >
+                <DataGrid
                     columns={columns}
-                    rows={masters}
+                    rows={services}
                     slots={{toolbar: GridToolbar}}
                     columnVisibilityModel={{id: false}}
                 />
@@ -63,4 +58,4 @@ function Masters() {
     );
 };
 
-export default Masters;
+export default Services;

@@ -5,11 +5,15 @@ import { Routes, Route } from "react-router-dom";
 import { ColorModeContext, useMode } from "./theme";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
+
+import Masters from "./scenes/masters/Masters";
+import Cities from "./scenes/cities/Cities";
+import Services from "./scenes/services/Services";
+
 import Dashboard from "./scenes/dashboard/Dashboard";
 import Team from "./scenes/team/Team";
 import Contacts from "./scenes/contacts/Contacts";
 import Invoices from "./scenes/invoices/Invoices";
-import Masters from "./scenes/masters/Masters";
 import Form from "./scenes/form/Form";
 /*import Bar from "./scenes/bar";
 import Line from "./scenes/line";
@@ -30,6 +34,8 @@ function App() {
                         <Topbar />
                         <Routes>
                             <Route path="/masters" element={<Masters />} />
+                            <Route path="/cities" element={<Cities />} />
+                            <Route path="/services" element={<Services />} />
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/team" element={<Team />} />
                             <Route path="/contacts" element={<Contacts />} />

@@ -207,6 +207,7 @@ function Sidebar() {
                                 />
                             ))
                         }
+                        {/*
                         <Item
                             key={DashboardItem.title}
                             title={DashboardItem.title}
@@ -266,6 +267,7 @@ function Sidebar() {
                                 />
                             ))
                         }
+                    */}
                     </Box>
                 </Menu>
             </ProSidebar>
