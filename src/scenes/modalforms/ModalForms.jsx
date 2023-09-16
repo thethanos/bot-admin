@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, TextField, Stack, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { getColors } from "../../theme";
-import { Answers } from "../../common";
+import { Actions } from "../../common";
 
-function AddCityForm({dialogState, setDialogState}) {
+function AddCityForm({actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
     const [city, setCity] = useState("");
@@ -18,18 +18,18 @@ function AddCityForm({dialogState, setDialogState}) {
             body: body
         }).then(()=>{
             setCity("");
-            setDialogState({open: false, answer: Answers.CONFIRM});
+            setActionState({open: false, action: Actions.UPDATE});
         }).catch(err => {
             console.log("ERROR: ", err);
         })
     };
 
     const onCancel = () => {
-        setDialogState({open: false, answer: Answers.REJECT});
+        setActionState({open: false, action: Actions.DEFAULT});
     };  
 
     return (
-        <Dialog open={dialogState.open} fullWidth>
+        <Dialog open={actionState.open} fullWidth>
             <Box sx={{background: colors.primary[400]}}>
                 <DialogTitle>Добавить город</DialogTitle>
                 <DialogContent>
@@ -84,7 +84,7 @@ const SelectServiceCategory = ({selected, setSelected}) => {
     );
 };
 
-function AddServiceForm({dialogState, setDialogState}) {
+function AddServiceForm({actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
     const [service, setService] = useState("");
@@ -99,18 +99,18 @@ function AddServiceForm({dialogState, setDialogState}) {
         }).then(()=>{
             setService("");
             setCategory(0);
-            setDialogState({open: false, answer: Answers.CONFIRM});
+            setActionState({open: false, action: Actions.UPDATE});
         }).catch(err => {
             console.log("ERROR: ", err);
         })
     };
 
     const onCancel = () => {
-        setDialogState({open: false, answer: Answers.REJECT});
+        setActionState({open: false, action: Actions.DEFAULT});
     }; 
 
     return (
-        <Dialog open={dialogState.open} fullWidth>
+        <Dialog open={actionState.open} fullWidth>
             <Box sx={{background: colors.primary[400]}}>
                 <DialogTitle>Добавить услугу</DialogTitle>
                 <DialogContent>
@@ -136,7 +136,7 @@ function AddServiceForm({dialogState, setDialogState}) {
     )
 };
 
-function AddMasterForm({dialogState, setDialogState}) {
+function AddMasterForm({actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
@@ -145,11 +145,11 @@ function AddMasterForm({dialogState, setDialogState}) {
     };
 
     const onCancel = () => {
-        setDialogState({open: false, answer: Answers.REJECT});
+        setActionState({open: false, action: Actions.DEFAULT});
     };
 
     return (
-        <Dialog open={dialogState.open} fullWidth>
+        <Dialog open={actionState.open} fullWidth>
             <Box sx={{background: colors.primary[400]}}>
                 <DialogTitle>Добавить мастера</DialogTitle>
                 <DialogContent>

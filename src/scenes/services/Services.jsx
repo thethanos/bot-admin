@@ -6,7 +6,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Header from "../../components/Header";
 import Toolbar from "../../components/GridToolbar";
 import { getColors } from "../../theme";
-import { Answers } from "../../common";
+import { Actions } from "../../common";
 import { AddServiceForm } from "../modalforms/ModalForms";
 
 const getGridStyle = (colors) => {
@@ -44,14 +44,28 @@ function Services() {
         {field: "name", headerName: "Услуга", flex: 1},
     ];
 
-    const [dialogState, setDialogState] = useState({open: false, answer: Answers.CONFIRM});
-    
+    const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
+    const [rowSelectionModel, setRowSelectionModel] = useState([]);
+
     const onAddBtn = () => {
-        setDialogState({...dialogState, open: true})
+        setTbActionState({...tbActionState, open: true})
     };
 
     const onDeleteBtn = () => {
-
+        if (rowSelectionModel.length === 0) {
+            return;
+        }
+        
+        let serviceID = rowSelectionModel[0];
+        fetch(`https://bot-dev-domain.com:444/services/${serviceID}`, {
+            method: "DELETE",
+        })
+        .then(()=>{
+            setTbActionState({...tbActionState, action: Actions.UPDATE});
+        })
+        .catch(err => {
+            console.log(err);
+        })
     };
 
     const CustomToolbar =  () => (
@@ -60,30 +74,34 @@ function Services() {
 
     const [services, setServices] = useState([]);
     useEffect(() => {
-        if (dialogState.answer !== Answers.CONFIRM) {
+        if (tbActionState.action !== Actions.UPDATE) {
             return
         }
         fetch("https://bot-dev-domain.com:444/services")
         .then(result => result.json())
         .then(data => {
             setServices(data);
-            setDialogState({...dialogState, answer: Answers.DEFAULT})
+            setTbActionState({...tbActionState, action: Actions.DEFAULT})
         })
         .catch(err => {
             console.log(err);
         })
-    }, [dialogState])
+    }, [tbActionState])
 
     return(
         <Box m="20px">
             <Header title="Услуга" subtitle="Список услуг доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddServiceForm dialogState={dialogState} setDialogState={setDialogState} />
+                <AddServiceForm actionState={tbActionState} setActionState={setTbActionState} />
                 <DataGrid
                     columns={columns}
                     rows={services}
                     slots={{toolbar: CustomToolbar}}
                     columnVisibilityModel={{id:false}}
+                    onRowSelectionModelChange={(newRowSelectionModel) => {
+                        setRowSelectionModel(newRowSelectionModel);
+                    }}
+                    rowSelectionModel={rowSelectionModel}
                 />
             </Box>
         </Box>

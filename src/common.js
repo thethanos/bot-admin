@@ -1,5 +1,4 @@
-export const Answers = {
-    CONFIRM: 0,
-    REJECT: 1,
-    DEFAULT: 2,
+export const Actions = {
+    UPDATE: 0,
+    DEFAULT: 1
 };

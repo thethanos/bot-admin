@@ -6,7 +6,7 @@ import { AddCityForm } from "../modalforms/ModalForms"
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/Header";
 import { getColors } from "../../theme";
-import { Answers } from "../../common";
+import { Actions } from "../../common";
 
 const getGridStyle = (colors) => {
         return {
@@ -42,14 +42,28 @@ function Cities() {
         {field: "name", headerName: "Город"}
     ];
 
-    const [dialogState, setDialogState] = useState({open: false, answer: Answers.CONFIRM});
+    const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
+    const [rowSelectionModel, setRowSelectionModel] = useState([]);
     
     const onAddBtn = () => {
-        setDialogState({...dialogState, open: true})
+        setTbActionState({...tbActionState, open: true})
     };
 
     const onDeleteBtn = () => {
-
+        if (rowSelectionModel.length === 0) {
+            return;
+        }
+        
+        let cityID = rowSelectionModel[0];
+        fetch(`https://bot-dev-domain.com:444/cities/${cityID}`, {
+            method: "DELETE",
+        })
+        .then(()=>{
+            setTbActionState({...tbActionState, action: Actions.UPDATE});
+        })
+        .catch(err => {
+            console.log(err);
+        })
     };
 
     const CustomToolbar =  () => (
@@ -59,30 +73,34 @@ function Cities() {
     const [cities, setCities] = useState([]);
     
     useEffect(()=>{
-        if (dialogState.answer !== Answers.CONFIRM) {
+        if (tbActionState.action !== Actions.UPDATE) {
             return
         }
         fetch("https://bot-dev-domain.com:444/cities")
         .then(response => response.json())
         .then(data => {
             setCities(data);
-            setDialogState({...dialogState, answer: Answers.DEFAULT})
+            setTbActionState({...tbActionState, action: Actions.DEFAULT})
         })
         .catch(err => {
             console.log(err);
         })
-    }, [dialogState.answer]);
+    }, [tbActionState]);
 
     return(
         <Box m="20px">
             <Header title="Город" subtitle="Список городов доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddCityForm dialogState={dialogState} setDialogState={setDialogState}/>
+                <AddCityForm actionState={tbActionState} setActionState={setTbActionState}/>
                 <DataGrid
                     columns={columns}
                     rows={cities} 
                     slots={{toolbar: CustomToolbar}}
                     columnVisibilityModel={{id: false}}
+                    onRowSelectionModelChange={(newRowSelectionModel) => {
+                        setRowSelectionModel(newRowSelectionModel);
+                    }}
+                    rowSelectionModel={rowSelectionModel}
                 />
             </Box>
         </Box>

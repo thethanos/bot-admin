@@ -5,7 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { getColors } from "../../theme";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/Header";
-import { Answers } from "../../common";
+import { Actions } from "../../common";
 import { AddMasterForm } from "../modalforms/ModalForms";
 
 const getGridStyle = (colors) => {
@@ -45,14 +45,28 @@ function Masters() {
         { field: "regDate", headerName: "Дата", flex: 0.5}
     ];
 
-    const [dialogState, setDialogState] = useState({open: false, answer: Answers.CONFIRM});
-    
+    const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
+    const [rowSelectionModel, setRowSelectionModel] = useState([]);
+
     const onAddBtn = () => {
-        setDialogState({...dialogState, open: true})
+        setTbActionState({...tbActionState, open: true})
     };
 
     const onDeleteBtn = () => {
-
+        if (rowSelectionModel.length === 0) {
+            return;
+        }
+        
+        let masterID = rowSelectionModel[0];
+        fetch(`https://bot-dev-domain.com:444/masters/${masterID}`, {
+            method: "DELETE",
+        })
+        .then(()=>{
+            setTbActionState({...tbActionState, action: Actions.UPDATE});
+        })
+        .catch(err => {
+            console.log(err);
+        })
     };
 
     const CustomToolbar =  () => (
@@ -69,18 +83,22 @@ function Masters() {
             .catch(err => {
                 console.log(err);
             })
-    }, []);
+    }, [tbActionState]);
 
     return (
         <Box m="20px">
             <Header title="Мастер" subtitle="Список мастеров зарегистрированных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddMasterForm dialogState={dialogState} setDialogState={setDialogState} />
+                <AddMasterForm actionState={tbActionState} setActionState={setTbActionState} />
                 <DataGrid
                     columns={columns}
                     rows={masters}
                     slots={{toolbar: CustomToolbar}}
                     columnVisibilityModel={{id: false}}
+                    onRowSelectionModelChange={(newRowSelectionModel) => {
+                        setRowSelectionModel(newRowSelectionModel);
+                    }}
+                    rowSelectionModel={rowSelectionModel}
                 />
             </Box>
         </Box>
