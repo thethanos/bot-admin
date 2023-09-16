@@ -72,7 +72,7 @@ function Services() {
         .catch(err => {
             console.log(err);
         })
-    }, [dialogState.answer])
+    }, [dialogState])
 
     return(
         <Box m="20px">

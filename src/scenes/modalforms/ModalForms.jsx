@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Box, Button, TextField, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import { Box, Button, TextField, Stack, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { getColors } from "../../theme";
 import { Answers } from "../../common";
 
 function AddCityForm({dialogState, setDialogState}) {
-
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
     const [city, setCity] = useState("");
@@ -53,20 +52,53 @@ function AddCityForm({dialogState, setDialogState}) {
     )
 };
 
-function AddServiceForm({dialogState, setDialogState}) {
+const SelectServiceCategory = ({selected, setSelected}) => {
 
+    const [categories, setCategories] = useState([]);
+    useEffect(()=>{
+        fetch("https://bot-dev-domain.com:444/services/categories")
+        .then(response => response.json())
+        .then(data => {
+            setCategories(data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }, []);
+
+    const handleChange = (event) => {
+        setSelected(event.target.value);
+    };
+
+    return (
+        <Box>
+            <Select variant="filled" fullWidth value={selected} onChange={handleChange}>
+                <MenuItem value={0} disabled>Категория</MenuItem>
+                {
+                    categories && categories.map((item) => (
+                        <MenuItem value={item.id}>{item.name}</MenuItem>
+                    ))
+                }
+            </Select>
+        </Box>
+    );
+};
+
+function AddServiceForm({dialogState, setDialogState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
     const [service, setService] = useState("");
+    const [category, setCategory] = useState(0);
 
     const onSave = () => {
-        const body = JSON.stringify({ name: service });
+        const body = JSON.stringify({ catID: category, name: service });
         fetch("https://bot-dev-domain.com:444/services", {
             method: "POST",
             headers: { "Content-Type" : "application/json"},
             body: body
         }).then(()=>{
             setService("");
+            setCategory(0);
             setDialogState({open: false, answer: Answers.CONFIRM});
         }).catch(err => {
             console.log("ERROR: ", err);
@@ -79,24 +111,57 @@ function AddServiceForm({dialogState, setDialogState}) {
 
     return (
         <Dialog open={dialogState.open} fullWidth>
-            <DialogTitle>Добавить услугу</DialogTitle>
-            <DialogContent>
-                <TextField
-                    fullWidth
-                    variant="filled"
-                    type="text"
-                    label="Услуга"
-                    value={service}
-                    onChange={(e)=>setService(e.target.value)}
-                    name="service"
-                />
-            </DialogContent>
-            <DialogActions sx={{margin: "0 15px 15px 0"}}>
-                <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
-                <Button onClick={onSave} color="secondary" variant="contained">Добавить</Button>
-            </DialogActions>
+            <Box sx={{background: colors.primary[400]}}>
+                <DialogTitle>Добавить услугу</DialogTitle>
+                <DialogContent>
+                    <Stack spacing={2}>
+                        <SelectServiceCategory selected={category} setSelected={setCategory}/>
+                        <TextField
+                            fullWidth
+                            variant="filled"
+                            type="text"
+                            label="Услуга"
+                            value={service}
+                            onChange={(e)=>setService(e.target.value)}
+                            name="service"
+                        />
+                    </Stack>
+                </DialogContent>
+                <DialogActions sx={{margin: "0 15px 15px 0"}}>
+                    <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
+                    <Button onClick={onSave} color="secondary" variant="contained">Добавить</Button>
+                </DialogActions>
+            </Box>
         </Dialog>
     )
 };
 
-export { AddCityForm, AddServiceForm };
+function AddMasterForm({dialogState, setDialogState}) {
+    const theme = useTheme();
+    const colors = getColors(theme.palette.mode);
+
+    const onSave = () => {
+
+    };
+
+    const onCancel = () => {
+        setDialogState({open: false, answer: Answers.REJECT});
+    };
+
+    return (
+        <Dialog open={dialogState.open} fullWidth>
+            <Box sx={{background: colors.primary[400]}}>
+                <DialogTitle>Добавить мастера</DialogTitle>
+                <DialogContent>
+
+                </DialogContent>
+                <DialogActions sx={{margin: "0 15px 15px 0"}}>
+                    <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
+                    <Button onClick={onSave} color="secondary" variant="contained">Добавить</Button>
+                </DialogActions>
+            </Box>
+        </Dialog>
+    );
+};
+
+export { AddMasterForm, AddCityForm, AddServiceForm };

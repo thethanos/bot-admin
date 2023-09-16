@@ -5,6 +5,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import { getColors } from "../../theme";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/Header";
+import { Answers } from "../../common";
+import { AddMasterForm } from "../modalforms/ModalForms";
 
 const getGridStyle = (colors) => {
     return {
@@ -43,6 +45,20 @@ function Masters() {
         { field: "regDate", headerName: "Дата", flex: 0.5}
     ];
 
+    const [dialogState, setDialogState] = useState({open: false, answer: Answers.CONFIRM});
+    
+    const onAddBtn = () => {
+        setDialogState({...dialogState, open: true})
+    };
+
+    const onDeleteBtn = () => {
+
+    };
+
+    const CustomToolbar =  () => (
+        <Toolbar onAddBtn={onAddBtn} onDeleteBtn={onDeleteBtn}/>
+    );
+
     const [masters, setMasters] = useState([]);
     useEffect(()=>{
         fetch("https://bot-dev-domain.com:444/masters")
@@ -59,10 +75,11 @@ function Masters() {
         <Box m="20px">
             <Header title="Мастер" subtitle="Список мастеров зарегистрированных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
+                <AddMasterForm dialogState={dialogState} setDialogState={setDialogState} />
                 <DataGrid
                     columns={columns}
                     rows={masters}
-                    slots={{toolbar: Toolbar}}
+                    slots={{toolbar: CustomToolbar}}
                     columnVisibilityModel={{id: false}}
                 />
             </Box>
