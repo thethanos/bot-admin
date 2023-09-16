@@ -1,9 +1,35 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { getColors } from "../../theme";
+import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/Header";
+
+const getGridStyle = (colors) => {
+    return {
+        "& .MuiDataGrid-root": {
+            border: "none"
+        },
+        "& .MuiDataGrid-cell": {
+            border: "none"
+        },
+        "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: colors.blueAccent[700],
+            border: "none"
+        },
+        "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: colors.primary[400]
+        },
+        "& .MuiDataGrid-footerContainer": {
+            borderTop: "none",
+            backgroundColor: colors.blueAccent[700]
+        },
+        "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${colors.grey[100]} !important`
+        }   
+    }
+};
 
 function Masters() {
     const theme = useTheme();
@@ -24,38 +50,19 @@ function Masters() {
             .then(data => {
                 setMasters(data);
             })
+            .catch(err => {
+                console.log(err);
+            })
     }, []);
 
     return (
         <Box m="20px">
             <Header title="Мастер" subtitle="Список мастеров зарегистрированных в системе" />
-            <Box height="75vh" 
-                sx={{
-                    "& .MuiDataGrid-root": {
-                        border: "none"
-                    },
-                    "& .MuiDataGrid-cell": {
-                        borderBottom: "none"
-                    },
-                    "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: colors.blueAccent[700],
-                        borderBottom: "none"
-                    },
-                    "& .MuiDataGrid-virtualScroller": {
-                        backgroundColor: colors.primary[400]
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                        borderTop: "none",
-                        backgroundColor: colors.blueAccent[700]
-                    },
-                    "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                        color: `${colors.grey[100]} !important`
-                    }
-            }}>
-                <DataGrid 
+            <Box height="75vh" sx={getGridStyle(colors)}>
+                <DataGrid
                     columns={columns}
                     rows={masters}
-                    slots={{toolbar: GridToolbar}}
+                    slots={{toolbar: Toolbar}}
                     columnVisibilityModel={{id: false}}
                 />
             </Box>
