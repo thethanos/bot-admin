@@ -57,7 +57,7 @@ function Services() {
         }
         
         let serviceID = rowSelectionModel[0];
-        fetch(`https://bot-dev-domain.com:444/services/${serviceID}`, {
+        fetch(`https://bot-dev-domain.com:1444/services/${serviceID}`, {
             method: "DELETE",
         })
         .then(()=>{
@@ -77,7 +77,7 @@ function Services() {
         if (tbActionState.action !== Actions.UPDATE) {
             return
         }
-        fetch("https://bot-dev-domain.com:444/services")
+        fetch("https://bot-dev-domain.com:1444/services")
         .then(result => result.json())
         .then(data => {
             setServices(data);

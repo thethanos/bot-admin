@@ -23,7 +23,7 @@ function AddCityForm({actionState, setActionState}) {
 
     const onSave = () => {
         const body = JSON.stringify({ name: city });
-        fetch("https://bot-dev-domain.com:444/cities", {
+        fetch("https://bot-dev-domain.com:1444/cities", {
             method: "POST",
             headers: { "Content-Type" : "application/json"},
             body: body
@@ -68,7 +68,7 @@ function AddCategoryForm({actionState, setActionState}) {
 
     const onSave = () => {
         const body = JSON.stringify({ name: category });
-        fetch("https://bot-dev-domain.com:444/services/categories", {
+        fetch("https://bot-dev-domain.com:1444/services/categories", {
             method: "POST",
             headers: { "Content-Type" : "application/json"},
             body: body
@@ -114,7 +114,7 @@ function AddServiceForm({actionState, setActionState}) {
 
     const onSave = () => {
         const body = JSON.stringify({ catID: category, name: service });
-        fetch("https://bot-dev-domain.com:444/services", {
+        fetch("https://bot-dev-domain.com:1444/services", {
             method: "POST",
             headers: { "Content-Type" : "application/json"},
             body: body
@@ -177,7 +177,7 @@ function AddMasterForm({actionState, setActionState}) {
             description: description,
             contact: contact,
         });
-        fetch("https://bot-dev-domain.com:444/masters", {
+        fetch("https://bot-dev-domain.com:1444/masters", {
             method: "POST",
             headers: { "Content-Type" : "application/json"},
             body: body
@@ -188,7 +188,7 @@ function AddMasterForm({actionState, setActionState}) {
             for (let image of images) {
                 const formData = new FormData();
                 formData.append("file", image);
-                await fetch(`https://bot-dev-domain.com:444/masters/images/${master_id}`, {
+                await fetch(`https://bot-dev-domain.com:1444/masters/images/${master_id}`, {
                     method: "POST",
                     body: formData,
                 })
@@ -244,7 +244,7 @@ function SelectCity({selected, setSelected}) {
 
     const [cities, setCities] = useState([]);
     useEffect(()=> {
-        fetch("https://bot-dev-domain.com:444/cities")
+        fetch("https://bot-dev-domain.com:1444/cities")
         .then(response => response.json())
         .then(data => {
             setCities(data);
@@ -274,7 +274,7 @@ function SelectServiceCategory({selected, setSelected}) {
 
     const [categories, setCategories] = useState([]);
     useEffect(()=>{
-        fetch("https://bot-dev-domain.com:444/services/categories")
+        fetch("https://bot-dev-domain.com:1444/services/categories")
         .then(response => response.json())
         .then(data => {
             setCategories(data);
@@ -304,7 +304,7 @@ function SelectServices({category, selected, setSelected}) {
 
     const [services, setServices] = useState([]);
     useEffect(()=>{
-        fetch(`https://bot-dev-domain.com:444/services?category_id=${category}`)
+        fetch(`https://bot-dev-domain.com:1444/services?category_id=${category}`)
         .then(response => response.json())
         .then(data => {
             setServices(data);

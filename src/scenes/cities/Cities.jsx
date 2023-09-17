@@ -55,7 +55,7 @@ function Cities() {
         }
         
         let cityID = rowSelectionModel[0];
-        fetch(`https://bot-dev-domain.com:444/cities/${cityID}`, {
+        fetch(`https://bot-dev-domain.com:1444/cities/${cityID}`, {
             method: "DELETE",
         })
         .then(()=>{
@@ -76,7 +76,7 @@ function Cities() {
         if (tbActionState.action !== Actions.UPDATE) {
             return
         }
-        fetch("https://bot-dev-domain.com:444/cities")
+        fetch("https://bot-dev-domain.com:1444/cities")
         .then(response => response.json())
         .then(data => {
             setCities(data);

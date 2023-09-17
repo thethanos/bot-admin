@@ -55,7 +55,7 @@ function Categories() {
         }
         
         let categoryID = rowSelectionModel[0];
-        fetch(`https://bot-dev-domain.com:444/services/categories/${categoryID}`, {
+        fetch(`https://bot-dev-domain.com:1444/services/categories/${categoryID}`, {
             method: "DELETE",
         })
         .then(()=>{
@@ -76,7 +76,7 @@ function Categories() {
         if (tbActionState.action !== Actions.UPDATE) {
             return
         }
-        fetch("https://bot-dev-domain.com:444/services/categories")
+        fetch("https://bot-dev-domain.com:1444/services/categories")
         .then(response => response.json())
         .then(data => {
             setCategories(data);

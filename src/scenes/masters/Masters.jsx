@@ -58,7 +58,7 @@ function Masters() {
         }
         
         let masterID = rowSelectionModel[0];
-        fetch(`https://bot-dev-domain.com:444/masters/${masterID}`, {
+        fetch(`https://bot-dev-domain.com:1444/masters/${masterID}`, {
             method: "DELETE",
         })
         .then(()=>{
@@ -78,7 +78,7 @@ function Masters() {
         if (tbActionState.action !== Actions.UPDATE) {
             return
         }
-        fetch("https://bot-dev-domain.com:444/masters")
+        fetch("https://bot-dev-domain.com:1444/masters")
         .then(response => response.json()) 
         .then(data => {
             setMasters(data);
