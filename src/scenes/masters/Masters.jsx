@@ -75,14 +75,17 @@ function Masters() {
 
     const [masters, setMasters] = useState([]);
     useEffect(()=>{
+        if (tbActionState.action !== Actions.UPDATE) {
+            return
+        }
         fetch("https://bot-dev-domain.com:444/masters")
-            .then(response => response.json()) 
-            .then(data => {
-                setMasters(data);
-            })
-            .catch(err => {
-                console.log(err);
-            })
+        .then(response => response.json()) 
+        .then(data => {
+            setMasters(data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }, [tbActionState]);
 
     return (

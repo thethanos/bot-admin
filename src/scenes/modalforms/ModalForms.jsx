@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
-
-import { Box, Button, TextField, Stack, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { 
+    Box, 
+    Button, 
+    TextField, 
+    Input,
+    Stack, 
+    Select, 
+    MenuItem, 
+    Dialog, 
+    DialogTitle, 
+    DialogContent, 
+    DialogActions 
+} from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { getColors } from "../../theme";
 import { Actions } from "../../common";
@@ -36,11 +47,9 @@ function AddCityForm({actionState, setActionState}) {
                     <TextField
                         fullWidth
                         variant="filled"
-                        type="text"
                         label="Город"
                         value={city}
-                        onChange={(e)=>setCity(e.target.value)}
-                        name="city"
+                        onChange={(event)=>setCity(event.target.value)}
                     />
                 </DialogContent>
                 <DialogActions sx={{margin: "0 15px 15px 0"}}>
@@ -50,38 +59,6 @@ function AddCityForm({actionState, setActionState}) {
             </Box>
         </Dialog>
     )
-};
-
-const SelectServiceCategory = ({selected, setSelected}) => {
-
-    const [categories, setCategories] = useState([]);
-    useEffect(()=>{
-        fetch("https://bot-dev-domain.com:444/services/categories")
-        .then(response => response.json())
-        .then(data => {
-            setCategories(data);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    }, []);
-
-    const handleChange = (event) => {
-        setSelected(event.target.value);
-    };
-
-    return (
-        <Box>
-            <Select variant="filled" fullWidth value={selected} onChange={handleChange}>
-                <MenuItem value={0} disabled>Категория</MenuItem>
-                {
-                    categories && categories.map((item) => (
-                        <MenuItem value={item.id}>{item.name}</MenuItem>
-                    ))
-                }
-            </Select>
-        </Box>
-    );
 };
 
 function AddServiceForm({actionState, setActionState}) {
@@ -119,11 +96,9 @@ function AddServiceForm({actionState, setActionState}) {
                         <TextField
                             fullWidth
                             variant="filled"
-                            type="text"
                             label="Услуга"
                             value={service}
-                            onChange={(e)=>setService(e.target.value)}
-                            name="service"
+                            onChange={(event)=>setService(event.target.value)}
                         />
                     </Stack>
                 </DialogContent>
@@ -140,8 +115,46 @@ function AddMasterForm({actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
-    const onSave = () => {
+    const [name, setName] = useState("");
+    const [city, setCity] = useState(0);
+    const [category, setCategory] = useState(0);
+    const [services, setServices] = useState([]);
+    const [description, setDescription] = useState("");
+    const [images, setImages] = useState([]);
+    const [contact, setContact] = useState(""); 
 
+    const onSave = () => {
+        const body = JSON.stringify({
+            name: name,
+            cityID: city,
+            servCatID: category,
+            servIDs: services,
+            description: description,
+            contact: contact,
+        });
+        fetch("https://bot-dev-domain.com:444/masters", {
+            method: "POST",
+            headers: { "Content-Type" : "application/json"},
+            body: body
+        })
+        .then(response => response.json())
+        .then(async (data)=>{
+            const master_id = data.id;
+            for (let image of images) {
+                const formData = new FormData();
+                formData.append("file", image);
+                await fetch(`https://bot-dev-domain.com:444/masters/images/${master_id}`, {
+                    method: "POST",
+                    body: formData,
+                })
+            }
+        })
+        .then(()=>{
+            setActionState({open: false, action: Actions.UPDATE});
+        })
+        .catch(err => {
+            console.log(err);
+        })
     };
 
     const onCancel = () => {
@@ -153,7 +166,23 @@ function AddMasterForm({actionState, setActionState}) {
             <Box sx={{background: colors.primary[400]}}>
                 <DialogTitle>Добавить мастера</DialogTitle>
                 <DialogContent>
-
+                    <Stack spacing={2}>
+                        <TextField variant="filled" label="ФИО" fullWidth 
+                            value={name} onChange={(event)=>setName(event.target.value)}
+                        />
+                        <SelectCity selected={city} setSelected={setCity}/>
+                        <SelectServiceCategory selected={category} setSelected={setCategory}/>
+                        <SelectServices category={category} selected={services} setSelected={setServices}/>
+                        <TextField variant="filled" label="Описание" multiline fullWidth
+                            value={description} onChange={(event)=>setDescription(event.target.value)}
+                        />
+                        <Input type="file" inputProps={{ multiple: true }}
+                            onChange={(event)=>setImages(event.target.files)}
+                        />
+                        <TextField variant="filled" label="Контактные данные" fullWidth
+                            value={contact} onChange={(event)=>setContact(event.target.value)}
+                        />
+                    </Stack>
                 </DialogContent>
                 <DialogActions sx={{margin: "0 15px 15px 0"}}>
                     <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
@@ -165,3 +194,93 @@ function AddMasterForm({actionState, setActionState}) {
 };
 
 export { AddMasterForm, AddCityForm, AddServiceForm };
+
+function SelectCity({selected, setSelected}) {
+
+    const [cities, setCities] = useState([]);
+    useEffect(()=> {
+        fetch("https://bot-dev-domain.com:444/cities")
+        .then(response => response.json())
+        .then(data => {
+            setCities(data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, []);
+ 
+    const handleChange = (event) => {
+        setSelected(event.target.value);
+    };
+
+    return (
+        <Select variant="filled" fullWidth value={selected} onChange={handleChange}>
+            <MenuItem key={0} value={0} disabled>Город</MenuItem>
+            {
+                cities && cities.map((item) => (
+                    <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                ))
+            }
+        </Select>
+    );
+};
+
+function SelectServiceCategory({selected, setSelected}) {
+
+    const [categories, setCategories] = useState([]);
+    useEffect(()=>{
+        fetch("https://bot-dev-domain.com:444/services/categories")
+        .then(response => response.json())
+        .then(data => {
+            setCategories(data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }, []);
+
+    const handleChange = (event) => {
+        setSelected(event.target.value);
+    };
+
+    return (
+        <Select variant="filled" fullWidth value={selected} onChange={handleChange}>
+            <MenuItem key={0} value={0} disabled>Категория</MenuItem>
+            {
+                categories && categories.map((item) => (
+                    <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                ))
+            }
+        </Select>
+    );
+};
+
+function SelectServices({category, selected, setSelected}) {
+
+    const [services, setServices] = useState([]);
+    useEffect(()=>{
+        fetch(`https://bot-dev-domain.com:444/services?category_id=${category}`)
+        .then(response => response.json())
+        .then(data => {
+            setServices(data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, [category]);
+
+    const handleChange = (event) => {
+        setSelected(event.target.value);
+    };
+
+    return (
+        <Select variant="filled" fullWidth value={selected} onChange={handleChange} multiple>
+            <MenuItem key={0} value={0} disabled>Услуга</MenuItem>
+            {
+                services && services.map((item) => (
+                    <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                ))
+            }
+        </Select>
+    );
+};
