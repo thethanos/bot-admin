@@ -1,27 +1,16 @@
 import React from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
-
 import { ColorModeContext, useMode } from "./theme";
+
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 
+import Dashboard from "./scenes/dashboard/Dashboard";
 import Masters from "./scenes/masters/Masters";
 import Cities from "./scenes/cities/Cities";
-import Services from "./scenes/services/Services";
-
-import Dashboard from "./scenes/dashboard/Dashboard";
-import Team from "./scenes/team/Team";
-import Contacts from "./scenes/contacts/Contacts";
-import Invoices from "./scenes/invoices/Invoices";
-import Form from "./scenes/form/Form";
 import Categories from "./scenes/categories/Categories";
-/*import Bar from "./scenes/bar";
-import Line from "./scenes/line";
-import Pie from "./scenes/pie";
-import FAQ from "./scenes/faq";
-import Geography from "./scenes/geography";
-import Calendar from "./scenes/calendar";*/
+import Services from "./scenes/services/Services";
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -34,21 +23,11 @@ function App() {
                     <main className="content">
                         <Topbar />
                         <Routes>
+                            <Route path="/" element={<Dashboard />} />
                             <Route path="/masters" element={<Masters />} />
                             <Route path="/cities" element={<Cities />} />
                             <Route path="/categories" element={<Categories/>} />
                             <Route path="/services" element={<Services />} />
-                            <Route path="/" element={<Dashboard />} />
-                            <Route path="/team" element={<Team />} />
-                            <Route path="/contacts" element={<Contacts />} />
-                            <Route path="/invoices" element={<Invoices />} />
-                            <Route path="/form" element={<Form />} />
-                            {/*<Route path="/bar" element={<Bar />} />
-                            <Route path="/pie" element={<Pie />} />
-                            <Route path="/line" element={<Line />} />
-                            <Route path="/faq" element={<FAQ />} />
-                            <Route path="/geography" element={<Geography />} />
-                            <Route path="/calendar" element={<Calendar />} />*/}
                         </Routes>
                     </main>
                 </div>

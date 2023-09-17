@@ -7,33 +7,17 @@ import { Link } from "react-router-dom";
 import { getColors } from "../../theme";
 import userImage from "../../assets/user.jpeg";
 
-import HomeOutlinedIcon from "@mui/icons-material/HomeMaxOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcond from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlinedIcon from "@mui/icons-material/PieChartOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import ClassOutlinedIcon from '@mui/icons-material/ClassOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 
-
-const DashboardItem =     {
-    title: "Dashboard",
-    to: "/",
-    icon: HomeOutlinedIcon,
-};
-
 const MainItems = [
     {
         title: "Статистика",
-        to: "/statistics",
+        to: "/",
         icon: TimelineOutlinedIcon
     },
     {
@@ -58,65 +42,6 @@ const MainItems = [
     }
 ];
 
-const DataItems = [
-    {
-        title: "Manage team",
-        to: "/team",
-        icon: PeopleOutlinedIcon
-    },
-    {
-        title: "Contacts information",
-        to: "/contacts",
-        icon: ContactsOutlinedIcond
-    },
-    {
-        title: "Invoice Balances",
-        to: "/invoices",
-        icon: ReceiptOutlinedIcon
-    }
-];
-
-const PagesItems = [
-    {
-        title: "Profile form",
-        to: "/form",
-        icon: PersonOutlinedIcon
-    },
-    {
-        title: "Calendar",
-        to: "/calendar",
-        icon: CalendarTodayOutlinedIcon
-    },
-    {
-        title: "FAQ Page",
-        to: "/faq",
-        icon: HelpOutlinedIcon
-    }
-];
-
-const ChartsItems = [
-    {
-        title: "Bar Chart",
-        to: "/bar",
-        icon: BarChartOutlinedIcon
-    },
-    {
-        title: "Pie Chart",
-        to: "/pie",
-        icon: PieChartOutlinedIcon
-    },
-    {
-        title: "Line Chart",
-        to: "/line",
-        icon: TimelineOutlinedIcon
-    },
-    {
-        title: "Geography Chart",
-        to: "/geography",
-        icon: MapOutlinedIcon
-    }
-];
-
 function Item({title, to, icon, selected, setSelected}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
@@ -136,27 +61,30 @@ function Item({title, to, icon, selected, setSelected}) {
 function Sidebar() {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
+
+    const style = {
+        "& .pro-sidebar-inner": {
+            background: `${colors.primary[400]} !important`,
+        },
+        "& .pro-icon-wrapper": {
+            backgroundColor: "transparent !important",
+        },
+        "& .pro-inner-item": {
+            padding: "5px 35px 5px 20px !important",
+        },
+        "& .pro-inner-item:hover": {
+            color: "#868dfb !important", 
+        },
+        "& .pro-menu-item.active": {
+            color: "#6870fa !important",
+        }
+    };
+
     const [isCollapsed, setCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
 
     return(
-        <Box sx={{
-            "& .pro-sidebar-inner": {
-                background: `${colors.primary[400]} !important`,
-            },
-            "& .pro-icon-wrapper": {
-                backgroundColor: "transparent !important",
-            },
-            "& .pro-inner-item": {
-                padding: "5px 35px 5px 20px !important",
-            },
-            "& .pro-inner-item:hover": {
-                color: "#868dfb !important", 
-            },
-            "& .pro-menu-item.active": {
-                color: "#6870fa !important",
-            }
-        }}>
+        <Box sx={style}>
             <ProSidebar collapsed={isCollapsed} style={{listStyle: "none"}}>
                 <Menu>
                     <MenuItem 
@@ -213,67 +141,6 @@ function Sidebar() {
                                 />
                             ))
                         }
-                        {/*
-                        <Item
-                            key={DashboardItem.title}
-                            title={DashboardItem.title}
-                            to={DashboardItem.to}
-                            icon={<DashboardItem.icon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Typography
-                            variant="h6"
-                            color={colors.grey[300]}
-                            sx={{m: "15px 0 5px 20px"}}
-                        >Data</Typography>
-                        {
-                            DataItems && DataItems.map((item) => (
-                                <Item 
-                                    key={item.title} 
-                                    title={item.title}
-                                    to={item.to}
-                                    icon={<item.icon />}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                />
-                            ))
-                        }
-                                                <Typography
-                            variant="h6"
-                            color={colors.grey[300]}
-                            sx={{m: "15px 0 5px 20px"}}
-                        >Pages</Typography>
-                        {
-                            PagesItems && PagesItems.map((item) => (
-                                <Item 
-                                    key={item.title} 
-                                    title={item.title}
-                                    to={item.to}
-                                    icon={<item.icon />}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                />
-                            ))
-                        }
-                                                <Typography
-                            variant="h6"
-                            color={colors.grey[300]}
-                            sx={{m: "15px 0 5px 20px"}}
-                        >Charts</Typography>
-                        {
-                            ChartsItems && ChartsItems.map((item) => (
-                                <Item 
-                                    key={item.title} 
-                                    title={item.title}
-                                    to={item.to}
-                                    icon={<item.icon />}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                />
-                            ))
-                        }
-                    */}
                     </Box>
                 </Menu>
             </ProSidebar>
