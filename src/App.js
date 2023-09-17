@@ -15,6 +15,7 @@ import Team from "./scenes/team/Team";
 import Contacts from "./scenes/contacts/Contacts";
 import Invoices from "./scenes/invoices/Invoices";
 import Form from "./scenes/form/Form";
+import Categories from "./scenes/categories/Categories";
 /*import Bar from "./scenes/bar";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
@@ -35,6 +36,7 @@ function App() {
                         <Routes>
                             <Route path="/masters" element={<Masters />} />
                             <Route path="/cities" element={<Cities />} />
+                            <Route path="/categories" element={<Categories/>} />
                             <Route path="/services" element={<Services />} />
                             <Route path="/" element={<Dashboard />} />
                             <Route path="/team" element={<Team />} />

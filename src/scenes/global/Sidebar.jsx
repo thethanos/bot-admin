@@ -20,6 +20,7 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
+import ClassOutlinedIcon from '@mui/icons-material/ClassOutlined';
 import ContentCutOutlinedIcon from '@mui/icons-material/ContentCutOutlined';
 
 
@@ -44,6 +45,11 @@ const MainItems = [
         title: "Город",
         to: "/cities",
         icon: LocationCityOutlinedIcon
+    },
+    {
+        title: "Категория",
+        to: "/categories",
+        icon: ClassOutlinedIcon
     },
     {
         title: "Услуга",

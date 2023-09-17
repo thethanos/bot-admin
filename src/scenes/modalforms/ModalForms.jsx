@@ -61,6 +61,51 @@ function AddCityForm({actionState, setActionState}) {
     )
 };
 
+function AddCategoryForm({actionState, setActionState}) {
+    const theme = useTheme();
+    const colors = getColors(theme.palette.mode);
+    const [category, setCategory] = useState("");
+
+    const onSave = () => {
+        const body = JSON.stringify({ name: category });
+        fetch("https://bot-dev-domain.com:444/services/categories", {
+            method: "POST",
+            headers: { "Content-Type" : "application/json"},
+            body: body
+        }).then(()=>{
+            setCategory("");
+            setActionState({open: false, action: Actions.UPDATE});
+        }).catch(err => {
+            console.log("ERROR: ", err);
+        })
+    };
+
+    const onCancel = () => {
+        setActionState({open: false, action: Actions.DEFAULT});
+    };  
+
+    return (
+        <Dialog open={actionState.open} fullWidth>
+            <Box sx={{background: colors.primary[400]}}>
+                <DialogTitle>Добавить категорию</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        fullWidth
+                        variant="filled"
+                        label="Категория"
+                        value={category}
+                        onChange={(event)=>setCategory(event.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions sx={{margin: "0 15px 15px 0"}}>
+                    <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
+                    <Button onClick={onSave} color="secondary" variant="contained">Добавить</Button>
+                </DialogActions>
+            </Box>
+        </Dialog>
+    )
+};
+
 function AddServiceForm({actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
@@ -193,7 +238,7 @@ function AddMasterForm({actionState, setActionState}) {
     );
 };
 
-export { AddMasterForm, AddCityForm, AddServiceForm };
+export { AddCityForm, AddCategoryForm, AddServiceForm, AddMasterForm };
 
 function SelectCity({selected, setSelected}) {
 
