@@ -92,6 +92,7 @@ function AddMasterForm({ actionState, setActionState }) {
                 }
             })
             .then(() => {
+                dispatch({type: Reduce.ResetState});
                 setActionState({ open: false, action: Actions.UPDATE });
             })
             .catch(err => {
@@ -100,6 +101,7 @@ function AddMasterForm({ actionState, setActionState }) {
     };
 
     const onCancel = () => {
+        dispatch({type: Reduce.ResetState});
         setActionState({ open: false, action: Actions.DEFAULT });
     };
 
