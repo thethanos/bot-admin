@@ -6,7 +6,7 @@ import { getColors } from "../../theme";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/Header";
 import { Actions } from "../../common";
-import { AddMasterForm } from "../modalforms/ModalForms";
+import AddMasterForm from "../modalforms/AddMasterForm";
 
 const getGridStyle = (colors) => {
     return {

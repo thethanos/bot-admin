@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { AddCityForm } from "../modalforms/ModalForms"
+import AddCityForm from "../modalforms/AddCityForm";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/Header";
 import { getColors } from "../../theme";
