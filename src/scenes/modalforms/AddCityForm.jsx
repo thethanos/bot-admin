@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { 
     Box, 
     Button, 
@@ -12,19 +12,21 @@ import { useTheme } from "@emotion/react";
 import { getColors } from "../../theme";
 import { Actions } from "../../common";
 
-function AddCityForm({actionState, setActionState}) {
+function AddCityForm({city, setCity, actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
-    const [city, setCity] = useState({});
 
     const onSave = () => {
         if (!city.value) {
             setCity({...city, error: true, help: "Обязательное поле"});
             return;
         }
-        const body = JSON.stringify({ name: city.value });
+        const body = JSON.stringify({
+            id: city.id, 
+            name: city.value 
+        });
         fetch("https://bot-dev-domain.com:1444/cities", {
-            method: "POST",
+            method: (city.id === -1?"POST":"PUT"),
             headers: { "Content-Type" : "application/json"},
             body: body
         }).then(()=>{
@@ -53,12 +55,12 @@ function AddCityForm({actionState, setActionState}) {
                         value={city.value}
                         error={city.error}
                         helperText={city.help}
-                        onChange={(event)=>setCity({value: event.target.value})}
+                        onChange={(event)=>setCity({...city, value: event.target.value})}
                     />
                 </DialogContent>
                 <DialogActions sx={{margin: "0 15px 15px 0"}}>
                     <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
-                    <Button onClick={onSave} color="secondary" variant="contained">Добавить</Button>
+                    <Button onClick={onSave} color="secondary" variant="contained">Сохранить</Button>
                 </DialogActions>
             </Box>
         </Dialog>

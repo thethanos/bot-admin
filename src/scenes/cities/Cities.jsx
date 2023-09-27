@@ -43,9 +43,23 @@ function Cities() {
     ];
 
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
+    const [cities, setCities] = useState([]);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [city, setCity] = useState({});
     
     const onAddBtn = () => {
+        setCity({});
+        setTbActionState({...tbActionState, open: true})
+    };
+
+    const onEditBtn = () => {
+        if (rowSelectionModel.length === 0) {
+            return;
+        }
+        let city = cities.find((value)=>{
+            return value.id === rowSelectionModel[0]
+        });
+        setCity({id: city.id, value: city.name});
         setTbActionState({...tbActionState, open: true})
     };
 
@@ -67,10 +81,8 @@ function Cities() {
     };
 
     const CustomToolbar =  () => (
-        <Toolbar onAddBtn={onAddBtn} onDeleteBtn={onDeleteBtn}/>
+        <Toolbar onAddBtn={onAddBtn} onEditBtn={onEditBtn} onDeleteBtn={onDeleteBtn}/>
     );
-
-    const [cities, setCities] = useState([]);
     
     useEffect(()=>{
         if (tbActionState.action !== Actions.UPDATE) {
@@ -91,7 +103,7 @@ function Cities() {
         <Box m="20px">
             <Header title="Город" subtitle="Список городов доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddCityForm actionState={tbActionState} setActionState={setTbActionState}/>
+                <AddCityForm city={city} setCity={setCity} actionState={tbActionState} setActionState={setTbActionState}/>
                 <DataGrid
                     columns={columns}
                     rows={cities} 

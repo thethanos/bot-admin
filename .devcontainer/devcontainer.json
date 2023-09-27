@@ -1,5 +1,5 @@
 {
-    "name": "webapp-dev",
+    "name": "admin-dev",
     "build": {
         "dockerfile": "../docker/dev.Dockerfile"
     },

@@ -163,7 +163,7 @@ function AddMasterForm({ actionState, setActionState }) {
                 </DialogContent>
                 <DialogActions sx={{ margin: "0 15px 15px 0" }}>
                     <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
-                    <Button onClick={onSave} color="secondary" variant="contained">Добавить</Button>
+                    <Button onClick={onSave} color="secondary" variant="contained">Сохранить</Button>
                 </DialogActions>
             </Box>
         </Dialog>
