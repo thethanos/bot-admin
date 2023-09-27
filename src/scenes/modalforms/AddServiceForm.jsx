@@ -54,7 +54,7 @@ function AddServiceForm({actionState, setActionState}) {
     return (
         <Dialog open={actionState.open} fullWidth>
             <Box sx={{background: colors.primary[400]}}>
-                <DialogTitle>Добавить услугу</DialogTitle>
+                <DialogTitle>Услуга</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2}>
                         <ServiceCategorySelect 

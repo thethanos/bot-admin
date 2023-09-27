@@ -108,7 +108,7 @@ function AddMasterForm({ actionState, setActionState }) {
     return (
         <Dialog open={actionState.open} fullWidth>
             <Box sx={{ background: colors.primary[400] }}>
-                <DialogTitle>Добавить мастера</DialogTitle>
+                <DialogTitle>Мастер</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2}>
                         <TextField

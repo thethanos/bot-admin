@@ -43,9 +43,23 @@ function Categories() {
     ];
 
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
+    const [categories, setCategories] = useState([]);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [category, setCategory] = useState({});
     
     const onAddBtn = () => {
+        setCategory({});
+        setTbActionState({...tbActionState, open: true})
+    };
+
+    const onEditBtn = () => {
+        if (rowSelectionModel.length === 0) {
+            return;
+        }
+        let category = categories.find((value)=>{
+            return value.id === rowSelectionModel[0]
+        });
+        setCategory({id: category.id, value: category.name});
         setTbActionState({...tbActionState, open: true})
     };
 
@@ -67,10 +81,8 @@ function Categories() {
     };
 
     const CustomToolbar =  () => (
-        <Toolbar onAddBtn={onAddBtn} onDeleteBtn={onDeleteBtn}/>
+        <Toolbar onAddBtn={onAddBtn} onEditBtn={onEditBtn} onDeleteBtn={onDeleteBtn}/>
     );
-
-    const [categories, setCategories] = useState([]);
     
     useEffect(()=>{
         if (tbActionState.action !== Actions.UPDATE) {
@@ -91,7 +103,7 @@ function Categories() {
         <Box m="20px">
             <Header title="Категория" subtitle="Список категорий услуг доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddCategoryForm actionState={tbActionState} setActionState={setTbActionState}/>
+                <AddCategoryForm category={category} setCategory={setCategory} actionState={tbActionState} setActionState={setTbActionState}/>
                 <DataGrid
                     columns={columns}
                     rows={categories} 

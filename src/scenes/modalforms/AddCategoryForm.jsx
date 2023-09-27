@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { 
     Box, 
     Button, 
@@ -12,20 +12,21 @@ import { useTheme } from "@emotion/react";
 import { getColors } from "../../theme";
 import { Actions } from "../../common";
 
-function AddCategoryForm({actionState, setActionState}) {
+function AddCategoryForm({category, setCategory, actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
-    const [category, setCategory] = useState({});
 
     const onSave = () => {
-        console.log(category);
         if (!category.value) {
             setCategory({...category, error: true, help: "Обязательное поле"});
             return;
         }
-        const body = JSON.stringify({ name: category.value });
+        const body = JSON.stringify({ 
+            id: category.id,
+            name: category.value 
+        });
         fetch("https://bot-dev-domain.com:1444/services/categories", {
-            method: "POST",
+            method: !category.id?"POST":"PUT",
             headers: { "Content-Type" : "application/json"},
             body: body
         }).then(()=>{
@@ -44,7 +45,7 @@ function AddCategoryForm({actionState, setActionState}) {
     return (
         <Dialog open={actionState.open} fullWidth>
             <Box sx={{background: colors.primary[400]}}>
-                <DialogTitle>Добавить категорию</DialogTitle>
+                <DialogTitle>Категория</DialogTitle>
                 <DialogContent>
                     <TextField
                         required
@@ -54,7 +55,7 @@ function AddCategoryForm({actionState, setActionState}) {
                         value={category.value}
                         error={category.error}
                         helperText={category.help}
-                        onChange={(event)=>setCategory({value: event.target.value})}
+                        onChange={(event)=>setCategory({...category, value: event.target.value})}
                     />
                 </DialogContent>
                 <DialogActions sx={{margin: "0 15px 15px 0"}}>

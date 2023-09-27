@@ -26,7 +26,7 @@ function AddCityForm({city, setCity, actionState, setActionState}) {
             name: city.value 
         });
         fetch("https://bot-dev-domain.com:1444/cities", {
-            method: (city.id === -1?"POST":"PUT"),
+            method: !city.id?"POST":"PUT",
             headers: { "Content-Type" : "application/json"},
             body: body
         }).then(()=>{
@@ -45,7 +45,7 @@ function AddCityForm({city, setCity, actionState, setActionState}) {
     return (
         <Dialog open={actionState.open} fullWidth>
             <Box sx={{background: colors.primary[400]}}>
-                <DialogTitle>Добавить город</DialogTitle>
+                <DialogTitle>Город</DialogTitle>
                 <DialogContent>
                     <TextField
                         required
