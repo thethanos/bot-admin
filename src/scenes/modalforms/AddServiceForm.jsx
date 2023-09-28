@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { 
     Box, 
     Button, 
@@ -15,11 +15,9 @@ import { Actions } from "../../common";
 
 import ServiceCategorySelect from "../../components/select/ServiceCategorySelect";
 
-function AddServiceForm({actionState, setActionState}) {
+function AddServiceForm({catState, setCatState, service, setService, actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
-    const [catState, setCatState] = useState({category: {value: 0}});
-    const [service, setService] = useState({value: ""});
 
     const onSave = () => {
         if (!catState.category.value) {
@@ -31,9 +29,13 @@ function AddServiceForm({actionState, setActionState}) {
             return;
         }
 
-        const body = JSON.stringify({ catID: catState.category.value, name: service.value });
+        const body = JSON.stringify({ 
+            catID: catState.category.value,
+            id: service.id, 
+            name: service.value 
+        });
         fetch("https://bot-dev-domain.com:1444/services", {
-            method: "POST",
+            method: !service.id?"POST":"PUT",
             headers: { "Content-Type" : "application/json"},
             body: body
         }).then(()=>{
@@ -69,7 +71,7 @@ function AddServiceForm({actionState, setActionState}) {
                             value={service.value}
                             error={service.error}
                             helperText={service.help}
-                            onChange={(event)=>setService({value: event.target.value})}
+                            onChange={(event)=>setService({...service, value: event.target.value})}
                         />
                     </Stack>
                 </DialogContent>

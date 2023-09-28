@@ -39,15 +39,33 @@ function Services() {
     const colors = getColors(theme.palette.mode);
 
     const columns = [
-        {field: "id", headerName:"id"},
+        {field: "id"},
+        {field: "catID"},
         {field: "catName", headerName: "Категория", flex: 1},
         {field: "name", headerName: "Услуга", flex: 1},
     ];
 
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
+    const [services, setServices] = useState([]);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [catState, setCatState] = useState({category: {value: 0}});
+    const [service, setService] = useState({value: ""});
 
     const onAddBtn = () => {
+        setCatState({category: {value: 0}});
+        setService({value: ""});
+        setTbActionState({...tbActionState, open: true})
+    };
+
+    const onEditBtn = () => {
+        if (rowSelectionModel.length === 0) {
+            return;
+        }
+        let service = services.find((value)=>{
+            return value.id === rowSelectionModel[0]
+        });
+        setCatState({category: {value: service.catID}});
+        setService({id: service.id, value: service.name});
         setTbActionState({...tbActionState, open: true})
     };
 
@@ -69,10 +87,9 @@ function Services() {
     };
 
     const CustomToolbar =  () => (
-        <Toolbar onAddBtn={onAddBtn} onDeleteBtn={onDeleteBtn}/>
+        <Toolbar onAddBtn={onAddBtn} onEditBtn={onEditBtn} onDeleteBtn={onDeleteBtn}/>
     );
 
-    const [services, setServices] = useState([]);
     useEffect(() => {
         if (tbActionState.action !== Actions.UPDATE) {
             return
@@ -92,12 +109,18 @@ function Services() {
         <Box m="20px">
             <Header title="Услуга" subtitle="Список услуг доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddServiceForm actionState={tbActionState} setActionState={setTbActionState} />
+                <AddServiceForm 
+                    catState={catState} 
+                    setCatState={setCatState} 
+                    service={service}
+                    setService={setService} 
+                    actionState={tbActionState} 
+                    setActionState={setTbActionState} />
                 <DataGrid
                     columns={columns}
                     rows={services}
                     slots={{toolbar: CustomToolbar}}
-                    columnVisibilityModel={{id:false}}
+                    columnVisibilityModel={{id:false, catID: false}}
                     onRowSelectionModelChange={(newRowSelectionModel) => {
                         setRowSelectionModel(newRowSelectionModel);
                     }}
