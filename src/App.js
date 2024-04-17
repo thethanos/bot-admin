@@ -1,16 +1,16 @@
 import React from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
-import { ColorModeContext, useMode } from "./theme";
+import { ColorModeContext, useMode } from "./services/providers/theme";
 
-import Topbar from "./scenes/global/Topbar";
-import Sidebar from "./scenes/global/Sidebar";
+import Topbar from "./components/global/Topbar";
+import Sidebar from "./components/global/Sidebar";
 
-import Dashboard from "./scenes/dashboard/Dashboard";
-import Masters from "./scenes/masters/Masters";
-import Cities from "./scenes/cities/Cities";
-import Categories from "./scenes/categories/Categories";
-import Services from "./scenes/services/Services";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Masters from "./pages/masters/Masters";
+import Cities from "./pages/cities/Cities";
+import Categories from "./pages/categories/Categories";
+import Services from "./pages/services/Services";
 
 function App() {
     const [theme, colorMode] = useMode();

@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
-import Header from "../../components/Header";
+import Header from "../../components/global/Header";
 import Toolbar from "../../components/GridToolbar";
-import { getColors } from "../../theme";
-import { Actions } from "../../common";
-import AddServiceForm from "../modalforms/AddServiceForm";
+import { getColors } from "../../services/providers/theme";
+import { Actions } from "../../utils/common";
+import AddServiceForm from "../../components/modalforms/AddServiceForm";
 
 const getGridStyle = (colors) => {
     return {

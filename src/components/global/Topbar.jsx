@@ -8,7 +8,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/Person2Outlined";
 import SearchIcon from '@mui/icons-material/Search';
 
-import { ColorModeContext, getColors } from "../../theme";
+import { ColorModeContext, getColors } from "../../services/providers/theme";
 
 function Topbar() {
     const theme = useTheme();

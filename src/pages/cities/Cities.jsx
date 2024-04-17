@@ -2,11 +2,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import AddCategoryForm from "../modalforms/AddCategoryForm";
+import AddCityForm from "../../components/modalforms/AddCityForm";
 import Toolbar from "../../components/GridToolbar";
-import Header from "../../components/Header";
-import { getColors } from "../../theme";
-import { Actions } from "../../common";
+import Header from "../../components/global/Header";
+import { getColors } from "../../services/providers/theme";
+import { Actions } from "../../utils/common";
 
 const getGridStyle = (colors) => {
         return {
@@ -33,22 +33,22 @@ const getGridStyle = (colors) => {
     }
 };
 
-function Categories() {
+function Cities() {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
     const columns = [
         {field: "id"},
-        {field: "name", headerName: "Категория", flex: 1}
+        {field: "name", headerName: "Город", flex: 1}
     ];
 
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
-    const [categories, setCategories] = useState([]);
+    const [cities, setCities] = useState([]);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
-    const [category, setCategory] = useState({});
+    const [city, setCity] = useState({});
     
     const onAddBtn = () => {
-        setCategory({});
+        setCity({});
         setTbActionState({...tbActionState, open: true})
     };
 
@@ -56,10 +56,10 @@ function Categories() {
         if (rowSelectionModel.length === 0) {
             return;
         }
-        let category = categories.find((value)=>{
+        let city = cities.find((value)=>{
             return value.id === rowSelectionModel[0]
         });
-        setCategory({id: category.id, value: category.name});
+        setCity({id: city.id, value: city.name});
         setTbActionState({...tbActionState, open: true})
     };
 
@@ -68,8 +68,8 @@ function Categories() {
             return;
         }
         
-        let categoryID = rowSelectionModel[0];
-        fetch(`https://bot-dev-domain.com:1444/services/categories/${categoryID}`, {
+        let cityID = rowSelectionModel[0];
+        fetch(`https://bot-dev-domain.com:1444/cities/${cityID}`, {
             method: "DELETE",
         })
         .then(()=>{
@@ -88,10 +88,10 @@ function Categories() {
         if (tbActionState.action !== Actions.UPDATE) {
             return
         }
-        fetch("https://bot-dev-domain.com:1444/services/categories")
+        fetch("https://bot-dev-domain.com:1444/cities")
         .then(response => response.json())
         .then(data => {
-            setCategories(data);
+            setCities(data);
             setTbActionState({...tbActionState, action: Actions.DEFAULT})
         })
         .catch(err => {
@@ -101,12 +101,12 @@ function Categories() {
 
     return(
         <Box m="20px">
-            <Header title="Категория" subtitle="Список категорий услуг доступных в системе" />
+            <Header title="Город" subtitle="Список городов доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddCategoryForm category={category} setCategory={setCategory} actionState={tbActionState} setActionState={setTbActionState}/>
+                <AddCityForm city={city} setCity={setCity} actionState={tbActionState} setActionState={setTbActionState}/>
                 <DataGrid
                     columns={columns}
-                    rows={categories} 
+                    rows={cities} 
                     slots={{toolbar: CustomToolbar}}
                     columnVisibilityModel={{id: false}}
                     onRowSelectionModelChange={(newRowSelectionModel) => {
@@ -119,4 +119,4 @@ function Categories() {
     );
 };
 
-export default Categories;
+export default Cities;

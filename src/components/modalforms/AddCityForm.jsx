@@ -9,28 +9,28 @@ import {
     DialogActions 
 } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { getColors } from "../../theme";
-import { Actions } from "../../common";
+import { getColors } from "../../services/providers/theme";
+import { Actions } from "../../utils/common";
 
-function AddCategoryForm({category, setCategory, actionState, setActionState}) {
+function AddCityForm({city, setCity, actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
     const onSave = () => {
-        if (!category.value) {
-            setCategory({...category, error: true, help: "Обязательное поле"});
+        if (!city.value) {
+            setCity({...city, error: true, help: "Обязательное поле"});
             return;
         }
-        const body = JSON.stringify({ 
-            id: category.id,
-            name: category.value 
+        const body = JSON.stringify({
+            id: city.id, 
+            name: city.value 
         });
-        fetch("https://bot-dev-domain.com:1444/services/categories", {
-            method: !category.id?"POST":"PUT",
+        fetch("https://bot-dev-domain.com:1444/cities", {
+            method: !city.id?"POST":"PUT",
             headers: { "Content-Type" : "application/json"},
             body: body
         }).then(()=>{
-            setCategory({});
+            setCity({});
             setActionState({open: false, action: Actions.UPDATE});
         }).catch(err => {
             console.log("ERROR: ", err);
@@ -38,24 +38,24 @@ function AddCategoryForm({category, setCategory, actionState, setActionState}) {
     };
 
     const onCancel = () => {
-        setCategory({});
+        setCity({});
         setActionState({open: false, action: Actions.DEFAULT});
     };  
 
     return (
         <Dialog open={actionState.open} fullWidth>
             <Box sx={{background: colors.primary[400]}}>
-                <DialogTitle>Категория</DialogTitle>
+                <DialogTitle>Город</DialogTitle>
                 <DialogContent>
                     <TextField
                         required
                         fullWidth
                         variant="filled"
-                        label="Категория"
-                        value={category.value}
-                        error={category.error}
-                        helperText={category.help}
-                        onChange={(event)=>setCategory({...category, value: event.target.value})}
+                        label="Город"
+                        value={city.value}
+                        error={city.error}
+                        helperText={city.help}
+                        onChange={(event)=>setCity({...city, value: event.target.value})}
                     />
                 </DialogContent>
                 <DialogActions sx={{margin: "0 15px 15px 0"}}>
@@ -67,4 +67,4 @@ function AddCategoryForm({category, setCategory, actionState, setActionState}) {
     )
 };
 
-export default AddCategoryForm;
+export default AddCityForm;

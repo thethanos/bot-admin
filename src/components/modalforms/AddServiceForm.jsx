@@ -10,8 +10,8 @@ import {
     DialogActions 
 } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { getColors } from "../../theme";
-import { Actions } from "../../common";
+import { getColors } from "../../services/providers/theme";
+import { Actions } from "../../utils/common";
 
 import ServiceCategorySelect from "../../components/select/ServiceCategorySelect";
 

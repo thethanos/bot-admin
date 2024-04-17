@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, Box, useTheme } from "@mui/material";
-import { getColors } from "../theme";
+import { getColors } from "../../services/providers/theme";
 
 function Header({title, subtitle}) {
     const theme = useTheme();

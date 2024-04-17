@@ -2,11 +2,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { getColors } from "../../theme";
+import { getColors } from "../../services/providers/theme";
 import Toolbar from "../../components/GridToolbar";
-import Header from "../../components/Header";
-import { Actions } from "../../common";
-import AddMasterForm from "../modalforms/AddMasterForm";
+import Header from "../../components/global/Header";
+import { Actions } from "../../utils/common";
+import AddMasterForm from "../../components/modalforms/AddMasterForm";
 
 const getGridStyle = (colors) => {
     return {
