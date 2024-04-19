@@ -82,14 +82,18 @@ function AddMasterForm({ actionState, setActionState }) {
             .then(response => response.json())
             .then(async (data) => {
                 const master_id = data.id;
+                let promises = [];
                 for (let image of state.images.values) {
                     const formData = new FormData();
                     formData.append("file", image);
-                    await fetch(`https://bot-dev-domain.com:1444/masters/images/${master_id}`, {
-                        method: "POST",
-                        body: formData,
-                    })
+                    promises.push(
+                        fetch(`https://bot-dev-domain.com:1444/masters/images/${master_id}`, {
+                            method: "POST",
+                            body: formData,
+                        })
+                    );
                 }
+                await Promise.all(promises);
             })
             .then(() => {
                 dispatch({type: Reduce.ResetState});
