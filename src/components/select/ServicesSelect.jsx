@@ -13,7 +13,7 @@ function ServicesSelect({ category, selected, setSelected }) {
         fetch(`https://bot-dev-domain.com:1444/services?category_id=${category}`)
             .then(response => response.json())
             .then(data => {
-                setSelected({values: [0]});
+                setSelected({values: ["0"]});
                 setServices(data);
             })
             .catch(err => {
@@ -24,9 +24,9 @@ function ServicesSelect({ category, selected, setSelected }) {
     const handleChange = (event) => {
         let items = event.target.value;
         if (items.length === 0) {
-            setSelected({values: [0]});
+            setSelected({values: ["0"]});
         } else {
-            setSelected({ values: event.target.value.filter((item)=>{return item > 0; }) });
+            setSelected({ values: event.target.value.filter((item)=>{return item !== "0"; }) });
         }
     };
 

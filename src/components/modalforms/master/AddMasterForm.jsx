@@ -11,40 +11,15 @@ import {
     DialogActions
 } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import { getColors } from "../../services/providers/theme";
-import { Actions } from "../../utils/common";
+import { getColors } from "../../../services/providers/theme";
+import { Actions } from "../../../utils/common";
 import { Reduce, reducer } from "./reducer";
 
-import CitySelect from "../../components/select/CitySelect";
-import ServiceCategorySelect from "../../components/select/ServiceCategorySelect";
-import ServicesSelect from "../../components/select/ServicesSelect";
+import CitySelect from "../../select/CitySelect";
+import ServiceCategorySelect from "../../select/ServiceCategorySelect";
+import ServicesSelect from "../../select/ServicesSelect";
 
-function validate(state) {
-    const error = { error: true, help: "Обязательное поле" };
-    if (!state.name.value) {
-        return [false, { type: Reduce.UpdateName, value: { value: state.name.value, ...error } }];
-    }
-    if (!state.city.value) {
-        return [false, { type: Reduce.UpdateCity, value: { value: state.city.value, ...error } }];
-    }
-    if (!state.category.value) {
-        return [false, { type: Reduce.UpdateCategory, value: { value: state.category.value, ...error } }];
-    }
-    if (state.services.values[0] === 0) {
-        return [false, { type: Reduce.UpdateServices, value: { values: state.services.values, ...error } }];
-    }
-    if (!state.description.value) {
-        return [false, { type: Reduce.UpdateDescription, value: { value: state.description.value, ...error } }];
-    }
-    if (state.images.values.length === 0) {
-        return [false, { type: Reduce.UpdateImages, value: { values: state.images.values, ...error } }];
-    }
-    if (!state.contact.value) {
-        return [false, { type: Reduce.UpdateContact, value: { value: state.contact.value, ...error } }];
-    }
-
-    return [true, {}];
-}
+import { validate } from "./validator.js";
 
 function AddMasterForm({ actionState, setActionState }) {
     const theme = useTheme();
@@ -52,12 +27,12 @@ function AddMasterForm({ actionState, setActionState }) {
 
     const [state, dispatch] = useReducer(reducer, {
         name: { value: "" },
-        city: { value: 0 },
-        category: { value: 0 },
-        services: { values: [0] },
-        description: {value: ""},
-        images: {values: []},
-        contact: {value: ""},
+        city: { value: "0" },
+        category: { value: "0" },
+        services: { values: ["0"] },
+        description: { value: "" },
+        images: { values: [] },
+        contact: { value: "" },
     });
 
     const onSave = () => {
@@ -96,7 +71,7 @@ function AddMasterForm({ actionState, setActionState }) {
                 await Promise.all(promises);
             })
             .then(() => {
-                dispatch({type: Reduce.ResetState});
+                dispatch({ type: Reduce.ResetState });
                 setActionState({ open: false, action: Actions.UPDATE });
             })
             .catch(err => {
@@ -105,10 +80,10 @@ function AddMasterForm({ actionState, setActionState }) {
     };
 
     const onCancel = () => {
-        dispatch({type: Reduce.ResetState});
+        dispatch({ type: Reduce.ResetState });
         setActionState({ open: false, action: Actions.DEFAULT });
     };
-
+    
     return (
         <Dialog open={actionState.open} fullWidth>
             <Box sx={{ background: colors.primary[400] }}>

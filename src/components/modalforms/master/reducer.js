@@ -28,9 +28,9 @@ export function reducer(state, action) {
         case Reduce.ResetState:
             return {
                 name: { value: "" },
-                city: { value: 0 },
-                category: { value: 0 },
-                services: { values: [0] },
+                city: { value: "0" },
+                category: { value: "0" },
+                services: { values: ["0"] },
                 description: {value: ""},
                 images: {values: []},
                 contact: {value: ""},
