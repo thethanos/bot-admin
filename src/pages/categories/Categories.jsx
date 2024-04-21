@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import AddCategoryForm from "../../components/modalforms/AddCategoryForm";
@@ -7,45 +7,18 @@ import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/global/Header";
 import { getColors } from "../../services/providers/theme";
 import { Actions } from "../../utils/common";
+import useLoadGridDataHook from "../../hooks/useLoadGridDataHook";
+import { columns, getGridStyle } from "./gridsettings.js";
 
-const getGridStyle = (colors) => {
-        return {
-            "& .MuiDataGrid-root": {
-                border: "none"
-            },
-            "& .MuiDataGrid-cell": {
-                border: "none"
-            },
-            "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: colors.blueAccent[700],
-                border: "none"
-            },
-            "& .MuiDataGrid-virtualScroller": {
-                backgroundColor: colors.primary[400]
-            },
-            "& .MuiDataGrid-footerContainer": {
-                borderTop: "none",
-                backgroundColor: colors.blueAccent[700]
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                color: `${colors.grey[100]} !important`
-            }
-    }
-};
 
 function Categories() {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
-    const columns = [
-        {field: "id"},
-        {field: "name", headerName: "Категория", flex: 1}
-    ];
-
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
-    const [categories, setCategories] = useState([]);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
     const [category, setCategory] = useState({});
+    const categories = useLoadGridDataHook("https://bot-dev-domain.com:1444/services/categories", tbActionState, setTbActionState);
     
     const onAddBtn = () => {
         setCategory({});
@@ -84,26 +57,16 @@ function Categories() {
         <Toolbar onAddBtn={onAddBtn} onEditBtn={onEditBtn} onDeleteBtn={onDeleteBtn}/>
     );
     
-    useEffect(()=>{
-        if (tbActionState.action !== Actions.UPDATE) {
-            return
-        }
-        fetch("https://bot-dev-domain.com:1444/services/categories")
-        .then(response => response.json())
-        .then(data => {
-            setCategories(data);
-            setTbActionState({...tbActionState, action: Actions.DEFAULT})
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }, [tbActionState]);
-
     return(
         <Box m="20px">
             <Header title="Категория" subtitle="Список категорий услуг доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddCategoryForm category={category} setCategory={setCategory} actionState={tbActionState} setActionState={setTbActionState}/>
+                <AddCategoryForm 
+                    category={category} 
+                    setCategory={setCategory} 
+                    actionState={tbActionState} 
+                    setActionState={setTbActionState}
+                />
                 <DataGrid
                     columns={columns}
                     rows={categories} 

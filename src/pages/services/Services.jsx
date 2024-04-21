@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
@@ -8,48 +8,18 @@ import Toolbar from "../../components/GridToolbar";
 import { getColors } from "../../services/providers/theme";
 import { Actions } from "../../utils/common";
 import AddServiceForm from "../../components/modalforms/AddServiceForm";
-
-const getGridStyle = (colors) => {
-    return {
-        "& .MuiDataGrid-root": {
-            border: "none"
-        },
-        "& .MuiDataGrid-cell": {
-            border: "none"
-        },
-        "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            border: "none"
-        },
-        "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400]
-        },
-        "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700]
-        },
-        "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`
-        }   
-    }
-};
+import useLoadGridDataHook from "../../hooks/useLoadGridDataHook";
+import { columns, getGridStyle } from "./gridsettings.js";
 
 function Services() {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
-    const columns = [
-        {field: "id"},
-        {field: "catID"},
-        {field: "catName", headerName: "Категория", flex: 1},
-        {field: "name", headerName: "Услуга", flex: 1},
-    ];
-
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
-    const [services, setServices] = useState([]);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
     const [catState, setCatState] = useState({category: {value: 0}});
     const [service, setService] = useState({value: ""});
+    const services = useLoadGridDataHook("https://bot-dev-domain.com:1444/services", tbActionState, setTbActionState);
 
     const onAddBtn = () => {
         setCatState({category: {value: 0}});
@@ -89,21 +59,6 @@ function Services() {
     const CustomToolbar =  () => (
         <Toolbar onAddBtn={onAddBtn} onEditBtn={onEditBtn} onDeleteBtn={onDeleteBtn}/>
     );
-
-    useEffect(() => {
-        if (tbActionState.action !== Actions.UPDATE) {
-            return
-        }
-        fetch("https://bot-dev-domain.com:1444/services")
-        .then(result => result.json())
-        .then(data => {
-            setServices(data);
-            setTbActionState({...tbActionState, action: Actions.DEFAULT})
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }, [tbActionState])
 
     return(
         <Box m="20px">
