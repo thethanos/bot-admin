@@ -64,13 +64,16 @@ function Services() {
         <Box m="20px">
             <Header title="Услуга" subtitle="Список услуг доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddServiceForm 
-                    catState={catState} 
-                    setCatState={setCatState} 
-                    service={service}
-                    setService={setService} 
-                    actionState={tbActionState} 
-                    setActionState={setTbActionState} />
+                { tbActionState.open && 
+                    <AddServiceForm 
+                        catState={catState} 
+                        setCatState={setCatState} 
+                        service={service}
+                        setService={setService} 
+                        actionState={tbActionState} 
+                        setActionState={setTbActionState} 
+                    />
+                }   
                 <DataGrid
                     columns={columns}
                     rows={services}

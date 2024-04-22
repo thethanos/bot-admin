@@ -10,11 +10,14 @@ function ServicesSelect({ category, selected, setSelected }) {
     const [services, setServices] = useState([]);
 
     useEffect(() => {
+        if (category === "0") {
+            return;
+        }
         fetch(`https://bot-dev-domain.com:1444/services?category_id=${category}`)
             .then(response => response.json())
             .then(data => {
-                setSelected({values: ["0"]});
                 setServices(data);
+                setSelected({values: selected.values });
             })
             .catch(err => {
                 console.log(err);

@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import {
     Box,
     Button,
@@ -13,27 +13,20 @@ import {
 import { useTheme } from "@emotion/react";
 import { getColors } from "../../../services/providers/theme";
 import { Actions } from "../../../utils/common";
-import { Reduce, reducer } from "./reducer";
+import { Reduce } from "../../../hooks/reducer.js";
 
 import CitySelect from "../../select/CitySelect";
 import ServiceCategorySelect from "../../select/ServiceCategorySelect";
 import ServicesSelect from "../../select/ServicesSelect";
 
 import { validate } from "./validator.js";
+import useLoadMasterDataHook from "../../../hooks/useLoadMasterDataHook";
 
-function AddMasterForm({ actionState, setActionState }) {
+function AddMasterForm({ currentMasterID, setCurrentMasterID, actionState, setActionState }) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
-    const [state, dispatch] = useReducer(reducer, {
-        name: { value: "" },
-        city: { value: "0" },
-        category: { value: "0" },
-        services: { values: ["0"] },
-        description: { value: "" },
-        images: { values: [] },
-        contact: { value: "" },
-    });
+    const [state, dispatch] = useLoadMasterDataHook(currentMasterID);
 
     const onSave = () => {
         const [valid, error] = validate(state);
@@ -50,7 +43,7 @@ function AddMasterForm({ actionState, setActionState }) {
             contact: state.contact.value,
         });
         fetch("https://bot-dev-domain.com:1444/masters", {
-            method: "POST",
+            method: currentMasterID.length === 0?"POST":"PUT",
             headers: { "Content-Type": "application/json" },
             body: body
         })
@@ -72,6 +65,7 @@ function AddMasterForm({ actionState, setActionState }) {
             })
             .then(() => {
                 dispatch({ type: Reduce.ResetState });
+                setCurrentMasterID("");
                 setActionState({ open: false, action: Actions.UPDATE });
             })
             .catch(err => {
@@ -81,6 +75,7 @@ function AddMasterForm({ actionState, setActionState }) {
 
     const onCancel = () => {
         dispatch({ type: Reduce.ResetState });
+        setCurrentMasterID("");
         setActionState({ open: false, action: Actions.DEFAULT });
     };
     

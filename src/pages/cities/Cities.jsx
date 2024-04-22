@@ -61,12 +61,14 @@ function Cities() {
         <Box m="20px">
             <Header title="Город" subtitle="Список городов доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddCityForm 
-                    city={city} 
-                    setCity={setCity} 
-                    actionState={tbActionState} 
-                    setActionState={setTbActionState}
-                />
+                { tbActionState.open && 
+                    <AddCityForm 
+                        city={city} 
+                        setCity={setCity} 
+                        actionState={tbActionState} 
+                        setActionState={setTbActionState} 
+                    />
+                }
                 <DataGrid
                     columns={columns}
                     rows={cities} 

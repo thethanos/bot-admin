@@ -1,4 +1,4 @@
-import { Reduce } from "./reducer.js";
+import { Reduce } from "../../../hooks/reducer";
 
 export function validate(state) {
     const error = { error: true, help: "Обязательное поле" };

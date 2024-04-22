@@ -61,12 +61,14 @@ function Categories() {
         <Box m="20px">
             <Header title="Категория" subtitle="Список категорий услуг доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddCategoryForm 
-                    category={category} 
-                    setCategory={setCategory} 
-                    actionState={tbActionState} 
-                    setActionState={setTbActionState}
-                />
+                { tbActionState.open && 
+                    <AddCategoryForm 
+                        category={category} 
+                        setCategory={setCategory} 
+                        actionState={tbActionState} 
+                        setActionState={setTbActionState}
+                    />
+                }
                 <DataGrid
                     columns={columns}
                     rows={categories} 

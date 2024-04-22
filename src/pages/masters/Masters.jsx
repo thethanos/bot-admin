@@ -16,12 +16,21 @@ function Masters() {
     const colors = getColors(theme.palette.mode);
 
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
+    const [currentMasterID, setCurrentMasterID] = useState("");
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
     const masters = useLoadGridDataHook("https://bot-dev-domain.com:1444/masters", tbActionState, setTbActionState);
 
     const onAddBtn = () => {
-        setTbActionState({...tbActionState, open: true})
+        setTbActionState({...tbActionState, open: true});
     };
+
+    const onEditBtn = () => {
+        if (rowSelectionModel.length === 0) {
+            return;
+        }
+        setCurrentMasterID(rowSelectionModel[0]);
+        setTbActionState({...tbActionState, open: true});
+    }
 
     const onDeleteBtn = () => {
         if (rowSelectionModel.length === 0) {
@@ -41,17 +50,21 @@ function Masters() {
     };
 
     const CustomToolbar =  () => (
-        <Toolbar onAddBtn={onAddBtn} onDeleteBtn={onDeleteBtn}/>
+        <Toolbar onAddBtn={onAddBtn} onEditBtn={onEditBtn} onDeleteBtn={onDeleteBtn}/>
     );
 
     return (
         <Box m="20px">
             <Header title="Мастер" subtitle="Список мастеров зарегистрированных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
-                <AddMasterForm
-                    actionState={tbActionState} 
-                    setActionState={setTbActionState} 
-                />
+                { tbActionState.open && 
+                    <AddMasterForm
+                        currentMasterID={currentMasterID}
+                        setCurrentMasterID={setCurrentMasterID}
+                        actionState={tbActionState} 
+                        setActionState={setTbActionState} 
+                    /> 
+                }
                 <DataGrid
                     columns={columns}
                     rows={masters}
