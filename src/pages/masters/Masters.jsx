@@ -18,9 +18,10 @@ function Masters() {
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
     const [currentMasterID, setCurrentMasterID] = useState("");
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
-    const masters = useLoadGridDataHook("https://bot-dev-domain.com:1444/masters", tbActionState, setTbActionState);
+    const masters = useLoadGridDataHook("https://bot-dev-domain.com:1444/masters/admin", tbActionState, setTbActionState);
 
     const onAddBtn = () => {
+        setCurrentMasterID("");
         setTbActionState({...tbActionState, open: true});
     };
 
@@ -60,7 +61,6 @@ function Masters() {
                 { tbActionState.open && 
                     <AddMasterForm
                         currentMasterID={currentMasterID}
-                        setCurrentMasterID={setCurrentMasterID}
                         actionState={tbActionState} 
                         setActionState={setTbActionState} 
                     /> 

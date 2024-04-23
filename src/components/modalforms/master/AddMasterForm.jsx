@@ -19,43 +19,46 @@ import CitySelect from "../../select/CitySelect";
 import ServiceCategorySelect from "../../select/ServiceCategorySelect";
 import ServicesSelect from "../../select/ServicesSelect";
 
-import { validate } from "./validator.js";
+import { Mode, validate } from "./validator.js";
 import useLoadMasterDataHook from "../../../hooks/useLoadMasterDataHook";
 
-function AddMasterForm({ currentMasterID, setCurrentMasterID, actionState, setActionState }) {
+function AddMasterForm({ currentMasterID, actionState, setActionState }) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
     const [state, dispatch] = useLoadMasterDataHook(currentMasterID);
 
+    const mode = currentMasterID.length > 0?Mode.EDIT:Mode.CREATE;
+
     const onSave = () => {
-        const [valid, error] = validate(state);
+        const [valid, error] = validate(state, mode);
         if (!valid) {
             dispatch(error);
             return;
         }
         const body = JSON.stringify({
+            id: currentMasterID,
             name: state.name.value,
             cityID: state.city.value,
             servCatID: state.category.value,
             servIDs: state.services.values,
             description: state.description.value,
             contact: state.contact.value,
+            status: 2, //to be replaced later
         });
         fetch("https://bot-dev-domain.com:1444/masters", {
-            method: currentMasterID.length === 0?"POST":"PUT",
+            method: mode === Mode.CREATE?"POST":"PUT",
             headers: { "Content-Type": "application/json" },
             body: body
         })
             .then(response => response.json())
             .then(async (data) => {
-                const master_id = data.id;
                 let promises = [];
                 for (let image of state.images.values) {
                     const formData = new FormData();
                     formData.append("file", image);
                     promises.push(
-                        fetch(`https://bot-dev-domain.com:1444/masters/images/${master_id}`, {
+                        fetch(`https://bot-dev-domain.com:1444/masters/images/${data.id}`, {
                             method: "POST",
                             body: formData,
                         })
@@ -65,7 +68,6 @@ function AddMasterForm({ currentMasterID, setCurrentMasterID, actionState, setAc
             })
             .then(() => {
                 dispatch({ type: Reduce.ResetState });
-                setCurrentMasterID("");
                 setActionState({ open: false, action: Actions.UPDATE });
             })
             .catch(err => {
@@ -75,7 +77,6 @@ function AddMasterForm({ currentMasterID, setCurrentMasterID, actionState, setAc
 
     const onCancel = () => {
         dispatch({ type: Reduce.ResetState });
-        setCurrentMasterID("");
         setActionState({ open: false, action: Actions.DEFAULT });
     };
     
@@ -117,13 +118,15 @@ function AddMasterForm({ currentMasterID, setCurrentMasterID, actionState, setAc
                             onChange={(event) => dispatch({ type: Reduce.UpdateDescription, value: { value: event.target.value } })}
                             multiline
                         />
-                        <Input
-                            type="file"
-                            inputProps={{ multiple: true }}
-                            files={state.images.values}
-                            error={state.images.error}
-                            onChange={(event) => dispatch({ type: Reduce.UpdateImages, value: { values: event.target.files } })}
-                        />
+                        { mode === Mode.CREATE && 
+                            <Input
+                                type="file"
+                                inputProps={{ multiple: true }}
+                                files={state.images.values}
+                                error={state.images.error}
+                                onChange={(event) => dispatch({ type: Reduce.UpdateImages, value: { values: event.target.files } })}
+                            />
+                         }
                         <TextField
                             fullWidth
                             variant="filled"

@@ -1,6 +1,11 @@
 import { Reduce } from "../../../hooks/reducer";
 
-export function validate(state) {
+export const Mode = {
+    CREATE: 0,
+    EDIT: 1,
+}
+
+export function validate(state, mode) {
     const error = { error: true, help: "Обязательное поле" };
     if (!state.name.value) {
         return [false, { type: Reduce.UpdateName, value: { value: state.name.value, ...error } }];
@@ -11,13 +16,13 @@ export function validate(state) {
     if (!state.category.value) {
         return [false, { type: Reduce.UpdateCategory, value: { value: state.category.value, ...error } }];
     }
-    if (state.services.values[0].length === 0) {
+    if (state.services.values[0] === "0") {
         return [false, { type: Reduce.UpdateServices, value: { values: state.services.values, ...error } }];
     }
     if (!state.description.value) {
         return [false, { type: Reduce.UpdateDescription, value: { value: state.description.value, ...error } }];
     }
-    if (state.images.values.length === 0) {
+    if (mode === Mode.CREATE && state.images.values.length === 0) {
         return [false, { type: Reduce.UpdateImages, value: { values: state.images.values, ...error } }];
     }
     if (!state.contact.value) {
