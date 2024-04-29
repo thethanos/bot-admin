@@ -20,6 +20,7 @@ import ServiceCategorySelect from "../../select/ServiceCategorySelect";
 import ServicesSelect from "../../select/ServicesSelect";
 
 import { Mode, validate } from "./validator.js";
+import uploadUserData from "./upload.js";
 import useLoadMasterDataHook from "../../../hooks/useLoadMasterDataHook";
 
 function AddMasterForm({ currentMasterID, actionState, setActionState }) {
@@ -36,43 +37,15 @@ function AddMasterForm({ currentMasterID, actionState, setActionState }) {
             dispatch(error);
             return;
         }
-        const body = JSON.stringify({
-            id: currentMasterID,
-            name: state.name.value,
-            cityID: state.city.value,
-            servCatID: state.category.value,
-            servIDs: state.services.values,
-            description: state.description.value,
-            contact: state.contact.value,
-            status: 2, //to be replaced later
-        });
-        fetch("https://bot-dev-domain.com:1444/masters", {
-            method: mode === Mode.CREATE?"POST":"PUT",
-            headers: { "Content-Type": "application/json" },
-            body: body
+
+        uploadUserData(currentMasterID, state, mode === Mode.CREATE?"POST":"PUT")
+        .then(() => {
+            dispatch({ type: Reduce.ResetState });
+            setActionState({ open: false, action: Actions.UPDATE });
         })
-            .then(response => response.json())
-            .then(async (data) => {
-                let promises = [];
-                for (let image of state.images.values) {
-                    const formData = new FormData();
-                    formData.append("file", image);
-                    promises.push(
-                        fetch(`https://bot-dev-domain.com:1444/masters/images/${data.id}`, {
-                            method: "POST",
-                            body: formData,
-                        })
-                    );
-                }
-                await Promise.all(promises);
-            })
-            .then(() => {
-                dispatch({ type: Reduce.ResetState });
-                setActionState({ open: false, action: Actions.UPDATE });
-            })
-            .catch(err => {
-                console.log(err);
-            })
+        .catch(err => {
+            console.log("uploadUserData: ", error)
+        });
     };
 
     const onCancel = () => {
