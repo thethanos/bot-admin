@@ -23,7 +23,7 @@ export default async function uploadUserData(id, state, action) {
         throw response.error;
     }
     
-    const master_id = response.json().id;
+    const master_id = await response.json().id;
     for (let image of state.images.values) {
         const formData = new FormData();
         formData.append("file", image);
