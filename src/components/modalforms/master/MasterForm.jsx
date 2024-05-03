@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Box,
     Button,
@@ -18,16 +18,18 @@ import { Reduce } from "../../../hooks/reducer.js";
 import CitySelect from "../../select/CitySelect";
 import ServiceCategorySelect from "../../select/ServiceCategorySelect";
 import ServicesSelect from "../../select/ServicesSelect";
+import ImageEditor from "./ImageEditor";
 
 import { Mode, validate } from "./validator.js";
 import uploadUserData from "./upload.js";
 import useLoadMasterDataHook from "../../../hooks/useLoadMasterDataHook";
 
-function AddMasterForm({ currentMasterID, actionState, setActionState }) {
+function MasterForm({ currentMasterID, actionState, setActionState }) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
     const [state, dispatch] = useLoadMasterDataHook(currentMasterID);
+    const [imageEditOpen, setImageEditOpen] = useState(false);
 
     const mode = currentMasterID.length > 0?Mode.EDIT:Mode.CREATE;
 
@@ -54,7 +56,16 @@ function AddMasterForm({ currentMasterID, actionState, setActionState }) {
     };
     
     return (
-        <Dialog open={actionState.open} fullWidth>
+        <React.Fragment>
+            { imageEditOpen && <ImageEditor 
+                open={imageEditOpen} 
+                setOpen={setImageEditOpen}
+                images={state.images.values}
+                imageURLs={state.imageURLs.values}
+                setImages={(event) => dispatch({ type: Reduce.UpdateImages, value: { values: event.target.files } })}
+                />
+            }
+            <Dialog open={actionState.open} fullWidth>
             <Box sx={{ background: colors.primary[400] }}>
                 <DialogTitle>Мастер</DialogTitle>
                 <DialogContent>
@@ -91,15 +102,10 @@ function AddMasterForm({ currentMasterID, actionState, setActionState }) {
                             onChange={(event) => dispatch({ type: Reduce.UpdateDescription, value: { value: event.target.value } })}
                             multiline
                         />
-                        { mode === Mode.CREATE && 
-                            <Input
-                                type="file"
-                                inputProps={{ multiple: true }}
-                                files={state.images.values}
-                                error={state.images.error}
-                                onChange={(event) => dispatch({ type: Reduce.UpdateImages, value: { values: event.target.files } })}
-                            />
-                         }
+                        <Button 
+                            sx={{color: "white"}} 
+                            onClick={()=>setImageEditOpen(true)}
+                        >Выберите фото</Button>
                         <TextField
                             fullWidth
                             variant="filled"
@@ -111,13 +117,14 @@ function AddMasterForm({ currentMasterID, actionState, setActionState }) {
                         />
                     </Stack>
                 </DialogContent>
-                <DialogActions sx={{ margin: "0 15px 15px 0" }}>
-                    <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
-                    <Button onClick={onSave} color="secondary" variant="contained">Сохранить</Button>
-                </DialogActions>
-            </Box>
-        </Dialog>
+                    <DialogActions sx={{ margin: "0 15px 15px 0" }}>
+                        <Button onClick={onCancel} color="secondary" variant="contained">Отмена</Button>
+                        <Button onClick={onSave} color="secondary" variant="contained">Сохранить</Button>
+                    </DialogActions>
+                </Box>
+            </Dialog>
+        </React.Fragment>
     );
 };
 
-export default AddMasterForm;
+export default MasterForm;

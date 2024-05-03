@@ -6,7 +6,7 @@ import { getColors } from "../../services/providers/theme";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/global/Header";
 import { Actions } from "../../utils/common";
-import AddMasterForm from "../../components/modalforms/master/AddMasterForm";
+import MasterForm from "../../components/modalforms/master/MasterForm";
 import useLoadGridDataHook from "../../hooks/useLoadGridDataHook";
 import { columns, getGridStyle } from "./gridsettings.js";
 
@@ -59,7 +59,7 @@ function Masters() {
             <Header title="Мастер" subtitle="Список мастеров зарегистрированных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
                 { tbActionState.open && 
-                    <AddMasterForm
+                    <MasterForm
                         currentMasterID={currentMasterID}
                         actionState={tbActionState} 
                         setActionState={setTbActionState} 

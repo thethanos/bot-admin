@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import AddCityForm from "../../components/modalforms/AddCityForm";
+import CityForm from "../../components/modalforms/CityForm";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/global/Header";
 import { getColors } from "../../services/providers/theme";
@@ -62,7 +62,7 @@ function Cities() {
             <Header title="Город" subtitle="Список городов доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
                 { tbActionState.open && 
-                    <AddCityForm 
+                    <CityForm 
                         city={city} 
                         setCity={setCity} 
                         actionState={tbActionState} 

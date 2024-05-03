@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import AddCategoryForm from "../../components/modalforms/AddCategoryForm";
+import CategoryForm from "../../components/modalforms/CategoryForm";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/global/Header";
 import { getColors } from "../../services/providers/theme";
@@ -62,7 +62,7 @@ function Categories() {
             <Header title="Категория" subtitle="Список категорий услуг доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
                 { tbActionState.open && 
-                    <AddCategoryForm 
+                    <CategoryForm 
                         category={category} 
                         setCategory={setCategory} 
                         actionState={tbActionState} 

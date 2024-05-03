@@ -13,9 +13,9 @@ import { useTheme } from "@emotion/react";
 import { getColors } from "../../services/providers/theme";
 import { Actions } from "../../utils/common";
 
-import ServiceCategorySelect from "../../components/select/ServiceCategorySelect";
+import ServiceCategorySelect from "../select/ServiceCategorySelect";
 
-function AddServiceForm({catState, setCatState, service, setService, actionState, setActionState}) {
+function ServiceForm({catState, setCatState, service, setService, actionState, setActionState}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
@@ -84,4 +84,4 @@ function AddServiceForm({catState, setCatState, service, setService, actionState
     )
 };
 
-export default AddServiceForm;
+export default ServiceForm;

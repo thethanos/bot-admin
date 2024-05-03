@@ -11,6 +11,7 @@ function useLoadMasterDataHook(id) {
         services: { values: ["0"] },
         description: { value: "" },
         images: { values: [] },
+        imageURLs: { values: [] },
         contact: { value: "" },
     });
 
@@ -30,6 +31,7 @@ function useLoadMasterDataHook(id) {
                         services: { values: master.servIDs },
                         description: { value: master.description },
                         images: { values: [] },
+                        imageURLs: { values: master.images },
                         contact: { value: master.contact },
                     }
     

@@ -7,7 +7,7 @@ import Header from "../../components/global/Header";
 import Toolbar from "../../components/GridToolbar";
 import { getColors } from "../../services/providers/theme";
 import { Actions } from "../../utils/common";
-import AddServiceForm from "../../components/modalforms/AddServiceForm";
+import ServiceForm from "../../components/modalforms/ServiceForm";
 import useLoadGridDataHook from "../../hooks/useLoadGridDataHook";
 import { columns, getGridStyle } from "./gridsettings.js";
 
@@ -65,7 +65,7 @@ function Services() {
             <Header title="Услуга" subtitle="Список услуг доступных в системе" />
             <Box height="75vh" sx={getGridStyle(colors)}>
                 { tbActionState.open && 
-                    <AddServiceForm 
+                    <ServiceForm 
                         catState={catState} 
                         setCatState={setCatState} 
                         service={service}
