@@ -10,8 +10,6 @@ function useLoadMasterDataHook(id) {
         category: { value: "0" },
         services: { values: ["0"] },
         description: { value: "" },
-        images: { values: [] },
-        imageURLs: { values: [] },
         contact: { value: "" },
     });
 
@@ -30,8 +28,6 @@ function useLoadMasterDataHook(id) {
                         category: { value: master.servCatID },
                         services: { values: master.servIDs },
                         description: { value: master.description },
-                        images: { values: [] },
-                        imageURLs: { values: master.images },
                         contact: { value: master.contact },
                     }
     

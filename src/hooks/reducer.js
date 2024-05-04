@@ -4,10 +4,9 @@ export const Reduce = {
     UpdateCategory: 2,
     UpdateServices: 3,
     UpdateDescription: 4,
-    UpdateImages: 5,
-    UpdateContact: 6,
-    UpdateAll: 7,
-    ResetState: 8,
+    UpdateContact: 5,
+    UpdateAll: 6,
+    ResetState: 7,
 };
 
 export function reducer(state, action) {
@@ -22,8 +21,6 @@ export function reducer(state, action) {
             return {...state, services: action.value};
         case Reduce.UpdateDescription:
             return {...state, description: action.value};
-        case Reduce.UpdateImages:
-            return {...state, images: action.value};
         case Reduce.UpdateContact:
             return {...state, contact: action.value};
         case Reduce.UpdateAll:

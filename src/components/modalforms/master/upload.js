@@ -1,6 +1,6 @@
 import { Status } from "../../../utils/common.js";
 
-export default async function uploadUserData(id, state, action) {
+export async function uploadUserData(id, state, action) {
     
     const body = JSON.stringify({
         id: id,
@@ -22,7 +22,7 @@ export default async function uploadUserData(id, state, action) {
     if (response.status !== Status.CREATED && response.status !== Status.OK) {
         throw response.error;
     }
-    
+    /*
     const master_id = await response.json().id;
     for (let image of state.images.values) {
         const formData = new FormData();
@@ -34,5 +34,9 @@ export default async function uploadUserData(id, state, action) {
         .catch(err => {
             console.log("uploadUserData: ", err);
         })
-    }
+    }*/
+}
+
+export async function uploadUserImages(images) {
+    console.log(images);
 }

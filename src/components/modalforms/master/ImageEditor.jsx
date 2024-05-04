@@ -1,7 +1,6 @@
 import {
     Box,
     Button,
-    TextField,
     Input,
     Stack,
     Dialog,
@@ -14,57 +13,127 @@ import {
 import { useState, useRef, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTheme } from "@emotion/react";
 import { getColors } from "../../../services/providers/theme";
+import { ImageMetaData, EditStatus, ImageType } from "./images";
+import ImagePlaceholder from "./ImagePlaceholder";
 
-/*
-                        { mode === Mode.CREATE && 
-                            <Input
-                                type="file"
-                                inputProps={{ multiple: true }}
-                                files={state.images.values}
-                                error={state.images.error}
-                                onChange={(event) => dispatch({ type: Reduce.UpdateImages, value: { values: event.target.files } })}
-                            />
-                         }
-*/
+function imageStyle(status) {
+    if (status === EditStatus.DELETED) {
+        return {
+            height: "100px",
+            color: "red",
+            border: "solid 2px"
+        }
+    }
+    if (status === EditStatus.DEFAULT) {
+        return {
+            height: "100px"
+        }
+    }
+    if (status === EditStatus.EDITED) {
+        return {
+            height: "100px"
+        }
+    }
+}
 
-
-function ImageEditor({open, setOpen, images, imageURLs, setImages}) {
+function ImageEditor({open, setOpen, images, setImages}) {
 
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
-    const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
-    const [urls, setUrls] = useState(imageURLs);
     const [selectedImage, setSelectedImage] = useState(0);
+    const [editedImages, setEditedImages] = useState(images);
+    const [newImages, setNewImages] = useState([]);
     const imageInput = useRef(null);
 
-    const onCropComplete = (croppedArea, croppedAreaPixels) => {
-        console.log(croppedArea, croppedAreaPixels)
+    const onCropChange = (point) => {
+        let cropped = editedImages.map((item) => {
+            if (item.url === editedImages[selectedImage].url) {
+                item = {...item, cropperPosition: point, status: EditStatus.EDITED};
+            }
+            return item;
+        });
+
+        setEditedImages(cropped);
     }
 
-    const omImagesAdd = () => {
+    const onZoomChange = (zoom) => {
+        let zoomed = editedImages.map((item) => {
+            if (item.url === editedImages[selectedImage].url) {
+                item = {...item, zoomValue: zoom};
+            }
+            return item;
+        });
+
+        setEditedImages(zoomed);
+    }
+
+    const onCropComplete = (croppedArea, croppedAreaPixels) => {
+        let cropped = editedImages.map((item) => {
+            if (item.url === editedImages[selectedImage].url) {
+                item = {...item, croppedArea, croppedAreaPixels};
+            }
+            return item;
+        });
+
+        setEditedImages(cropped);
+    }
+
+    const onImagesAdd = () => {
         imageInput.current.click();
     }
 
+    const onImageRestore = () => {
+        let restored = editedImages.map((item) => {
+            if (item.url === editedImages[selectedImage].url) {
+                item = new ImageMetaData(item.url);
+            }
+            return item;
+        });
+        setEditedImages(restored);
+    }
+
+    const onImageDelete = () => {
+        let filtered = [];
+        if (editedImages[selectedImage].type === ImageType.NEW) {
+            filtered = editedImages.filter((item) => {
+                return item.url !== editedImages[selectedImage].url;
+            });
+            setSelectedImage(selectedImage > 0?selectedImage - 1:0);
+        }
+
+        if (editedImages[selectedImage].type === ImageType.FROM_SERVER) {
+            filtered = editedImages.map((item) => {
+                if (item.url === editedImages[selectedImage].url) {
+                    item = {...item, status: EditStatus.DELETED};
+                }
+                return item;
+            });
+        }
+        setEditedImages(filtered);
+    };
+
     const onSave = () => {
+        setImages(editedImages);
         setOpen(false);
     }
 
     const onCancel = () => {
+        setImages(images);
         setOpen(false);
     }
 
     useEffect(()=> {
-        const newURLs = [...urls];
-        for (let i = 0; i < images.length; i++) {
-            newURLs.push(URL.createObjectURL(images[i]));
+        let tempState = [...editedImages];
+        for (let image of newImages) {
+            tempState.push(new ImageMetaData(URL.createObjectURL(image), ImageType.NEW));
         }
-        setUrls(newURLs);
-    }, [images]);
+        setEditedImages(tempState);
+    }, [newImages]);
 
     return (
         <Dialog open={open} fullWidth>
@@ -73,32 +142,35 @@ function ImageEditor({open, setOpen, images, imageURLs, setImages}) {
                 inputRef={imageInput}
                 type="file"
                 inputProps={{ multiple: true }}
-                files={images}
-                onChange={setImages}
+                files={newImages}
+                onChange={(event)=>setNewImages(event.target.files)}
             />
             <Box sx={{ background: colors.primary[400] }}>
                 <DialogTitle>Фотографии</DialogTitle>
                 <DialogContent sx={{padding: "0px 24px"}}>
                     <Stack spacing={2}>
                         <Box sx={{"& .reactEasyCrop_Container": {height: "350px !important", position: "relative !important"}}}>
-                            <Cropper
-                                image={urls[selectedImage]} 
-                                crop={crop}
-                                zoom={zoom}
+                            {editedImages.length === 0 && <ImagePlaceholder variant="h1" height="350px" background="#585c64"/>}
+                            {editedImages.length >0 && <Cropper
+                                image={editedImages[selectedImage].url} 
+                                crop={editedImages[selectedImage].cropperPosition}
+                                zoom={editedImages[selectedImage].zoomValue}
                                 aspect={1/1}
-                                onCropChange={setCrop}
+                                onCropChange={onCropChange}
                                 onCropComplete={onCropComplete}
-                                onZoomChange={setZoom}
-                            />
+                                onZoomChange={onZoomChange}
+                            />}
                             <Box sx={{margin: "8px",display: "flex", justifyContent: "end"}}>
-                                <Button sx={{color: "white"}} onClick={omImagesAdd}><AddIcon />Добавить</Button>
-                                <Button sx={{color: "white"}}><DeleteIcon />Удалить</Button>
+                                <Button sx={{color: "white"}} onClick={onImagesAdd}><AddIcon />Добавить</Button>
+                                <Button sx={{color: "white"}} onClick={onImageRestore}><EditIcon />Восстановить</Button>
+                                <Button sx={{color: "white"}} onClick={onImageDelete}><DeleteIcon />Удалить</Button>
                             </Box>
-                            <ImageList cols={urls.length < 4?4:urls.length} sx={{height: "130px"}}>
-                                {urls.length > 0 && urls.map((item, index) => (
+                            <ImageList cols={editedImages.length < 4?4:editedImages.length} sx={{height: "130px"}}>
+                                {editedImages.length === 0 && <ImagePlaceholder variant="h4" height="100px" background="#585c64" />}
+                                {editedImages.length > 0 && editedImages.map((item, index) => (
                                     <ImageListItem key={index}>
-                                    <Box component="img" sx={{ maxHeight: "100px"}}
-                                        src={item}
+                                    <Box component="img" sx={imageStyle(item.status)}
+                                        src={item.url}
                                         alt={"nice image"}
                                         loading="lazy"
                                         onClick={()=>setSelectedImage(index)}

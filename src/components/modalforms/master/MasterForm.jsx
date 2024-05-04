@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Button,
     TextField,
-    Input,
     Stack,
     Dialog,
     DialogTitle,
@@ -13,25 +12,43 @@ import {
 import { useTheme } from "@emotion/react";
 import { getColors } from "../../../services/providers/theme";
 import { Actions } from "../../../utils/common";
-import { Reduce } from "../../../hooks/reducer.js";
+import { Reduce } from "../../../hooks/reducer";
 
-import CitySelect from "../../select/CitySelect";
+import CitySelect from "../../select/CitySelect.jsx";
 import ServiceCategorySelect from "../../select/ServiceCategorySelect";
 import ServicesSelect from "../../select/ServicesSelect";
 import ImageEditor from "./ImageEditor";
 
-import { Mode, validate } from "./validator.js";
-import uploadUserData from "./upload.js";
+import { Mode, validate } from "./validator";
+import { uploadUserData, uploadUserImages } from "./upload";
 import useLoadMasterDataHook from "../../../hooks/useLoadMasterDataHook";
+import { ImageMetaData } from "./images";
+
+const dummyImages = [
+    "https://bot-dev-domain.com:9000/f2bd1e0d-00cb-4750-b56e-65965828d674/220325case013.jpg",
+    "https://bot-dev-domain.com:9000/f2bd1e0d-00cb-4750-b56e-65965828d674/Cat-with-Sunglasses-Background.jpg",
+    "https://bot-dev-domain.com:9000/f2bd1e0d-00cb-4750-b56e-65965828d674/images.jpeg"
+];
 
 function MasterForm({ currentMasterID, actionState, setActionState }) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
+    const mode = currentMasterID.length > 0?Mode.EDIT:Mode.CREATE;
+
     const [state, dispatch] = useLoadMasterDataHook(currentMasterID);
     const [imageEditOpen, setImageEditOpen] = useState(false);
-
-    const mode = currentMasterID.length > 0?Mode.EDIT:Mode.CREATE;
+    const [imagesState, setImagesState] = useState([]);
+    useEffect(()=> {
+        if (mode === Mode.CREATE) {
+            return;
+        }
+        let tempState = [];
+        for (let i = 0; i < dummyImages.length; i++) {
+            tempState.push(new ImageMetaData(dummyImages[i]));
+        }
+        setImagesState(tempState);
+    }, []);
 
     const onSave = () => {
         const [valid, error] = validate(state, mode);
@@ -44,6 +61,7 @@ function MasterForm({ currentMasterID, actionState, setActionState }) {
         .then(() => {
             dispatch({ type: Reduce.ResetState });
             setActionState({ open: false, action: Actions.UPDATE });
+            uploadUserImages(imagesState);
         })
         .catch(err => {
             console.log("uploadUserData: ", error)
@@ -60,9 +78,8 @@ function MasterForm({ currentMasterID, actionState, setActionState }) {
             { imageEditOpen && <ImageEditor 
                 open={imageEditOpen} 
                 setOpen={setImageEditOpen}
-                images={state.images.values}
-                imageURLs={state.imageURLs.values}
-                setImages={(event) => dispatch({ type: Reduce.UpdateImages, value: { values: event.target.files } })}
+                images={imagesState}
+                setImages={setImagesState}
                 />
             }
             <Dialog open={actionState.open} fullWidth>
