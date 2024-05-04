@@ -5,7 +5,7 @@ export const Mode = {
     EDIT: 1,
 }
 
-export function validate(state, mode) {
+export function validate(state) {
     const error = { error: true, help: "Обязательное поле" };
     if (!state.name.value) {
         return [false, { type: Reduce.UpdateName, value: { value: state.name.value, ...error } }];
@@ -21,9 +21,6 @@ export function validate(state, mode) {
     }
     if (!state.description.value) {
         return [false, { type: Reduce.UpdateDescription, value: { value: state.description.value, ...error } }];
-    }
-    if (mode === Mode.CREATE && state.images.values.length === 0) {
-        return [false, { type: Reduce.UpdateImages, value: { values: state.images.values, ...error } }];
     }
     if (!state.contact.value) {
         return [false, { type: Reduce.UpdateContact, value: { value: state.contact.value, ...error } }];

@@ -14,12 +14,12 @@ function useLoadMasterDataHook(id) {
     });
 
     useEffect(()=> {
-        if (id.length > 0) {
+        if (id.length !== 0) {
 
-            const setMasterData = async () => {
+            const loadMasterData = async () => {
                 try {
-                    let data = await fetch("https://bot-dev-domain.com:1444/masters/"+ id);
-                    let master = await data.json();
+                    let masterResponse = await fetch(`https://bot-dev-domain.com:1444/masters/${id}`);
+                    let master = await masterResponse.json();
                     
                     let newState = {
                         id: { value: id},
@@ -38,7 +38,7 @@ function useLoadMasterDataHook(id) {
                 }
             }
 
-            setMasterData();
+            loadMasterData();
         }
     }, [id]);
 

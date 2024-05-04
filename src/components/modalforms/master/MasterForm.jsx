@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Button,
@@ -22,13 +22,8 @@ import ImageEditor from "./ImageEditor";
 import { Mode, validate } from "./validator";
 import { uploadUserData, uploadUserImages } from "./upload";
 import useLoadMasterDataHook from "../../../hooks/useLoadMasterDataHook";
-import { ImageMetaData } from "./images";
+import useLoadMasterImagesHook from "../../../hooks/useLoadMasterImagesHook";
 
-const dummyImages = [
-    "https://bot-dev-domain.com:9000/f2bd1e0d-00cb-4750-b56e-65965828d674/220325case013.jpg",
-    "https://bot-dev-domain.com:9000/f2bd1e0d-00cb-4750-b56e-65965828d674/Cat-with-Sunglasses-Background.jpg",
-    "https://bot-dev-domain.com:9000/f2bd1e0d-00cb-4750-b56e-65965828d674/images.jpeg"
-];
 
 function MasterForm({ currentMasterID, actionState, setActionState }) {
     const theme = useTheme();
@@ -37,18 +32,8 @@ function MasterForm({ currentMasterID, actionState, setActionState }) {
     const mode = currentMasterID.length > 0?Mode.EDIT:Mode.CREATE;
 
     const [state, dispatch] = useLoadMasterDataHook(currentMasterID);
+    const [imagesState, setImagesState] = useLoadMasterImagesHook(currentMasterID);
     const [imageEditOpen, setImageEditOpen] = useState(false);
-    const [imagesState, setImagesState] = useState([]);
-    useEffect(()=> {
-        if (mode === Mode.CREATE) {
-            return;
-        }
-        let tempState = [];
-        for (let i = 0; i < dummyImages.length; i++) {
-            tempState.push(new ImageMetaData(dummyImages[i]));
-        }
-        setImagesState(tempState);
-    }, []);
 
     const onSave = () => {
         const [valid, error] = validate(state, mode);
@@ -58,10 +43,10 @@ function MasterForm({ currentMasterID, actionState, setActionState }) {
         }
 
         uploadUserData(currentMasterID, state, mode === Mode.CREATE?"POST":"PUT")
-        .then(() => {
+        .then((id) => {
+            uploadUserImages(id, imagesState);
             dispatch({ type: Reduce.ResetState });
             setActionState({ open: false, action: Actions.UPDATE });
-            uploadUserImages(imagesState);
         })
         .catch(err => {
             console.log("uploadUserData: ", error)

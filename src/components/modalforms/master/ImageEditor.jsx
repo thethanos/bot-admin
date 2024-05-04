@@ -17,7 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTheme } from "@emotion/react";
 import { getColors } from "../../../services/providers/theme";
-import { ImageMetaData, EditStatus, ImageType } from "./images";
+import { ImageMetaData, EditStatus, ImageType } from "../../../utils/images";
 import ImagePlaceholder from "./ImagePlaceholder";
 
 function imageStyle(status) {
@@ -53,7 +53,8 @@ function ImageEditor({open, setOpen, images, setImages}) {
     const onCropChange = (point) => {
         let cropped = editedImages.map((item) => {
             if (item.url === editedImages[selectedImage].url) {
-                item = {...item, cropperPosition: point, status: EditStatus.EDITED};
+                item.setCroppedPosition(point);
+                item.setStatus(EditStatus.EDITED);
             }
             return item;
         });
@@ -64,7 +65,7 @@ function ImageEditor({open, setOpen, images, setImages}) {
     const onZoomChange = (zoom) => {
         let zoomed = editedImages.map((item) => {
             if (item.url === editedImages[selectedImage].url) {
-                item = {...item, zoomValue: zoom};
+                item.setZoom(zoom);
             }
             return item;
         });
@@ -75,7 +76,8 @@ function ImageEditor({open, setOpen, images, setImages}) {
     const onCropComplete = (croppedArea, croppedAreaPixels) => {
         let cropped = editedImages.map((item) => {
             if (item.url === editedImages[selectedImage].url) {
-                item = {...item, croppedArea, croppedAreaPixels};
+                item.setCroppedArea(croppedArea);
+                item.setCroppedAreaPixels(croppedAreaPixels);
             }
             return item;
         });
@@ -88,11 +90,11 @@ function ImageEditor({open, setOpen, images, setImages}) {
     }
 
     const onImageRestore = () => {
-        let restored = editedImages.map((item) => {
-            if (item.url === editedImages[selectedImage].url) {
-                item = new ImageMetaData(item.url);
+        let restored = editedImages.map((image) => {
+            if (image.url === editedImages[selectedImage].url) {
+                image = new ImageMetaData(image.name, image.url);
             }
-            return item;
+            return image;
         });
         setEditedImages(restored);
     }
@@ -109,7 +111,7 @@ function ImageEditor({open, setOpen, images, setImages}) {
         if (editedImages[selectedImage].type === ImageType.FROM_SERVER) {
             filtered = editedImages.map((item) => {
                 if (item.url === editedImages[selectedImage].url) {
-                    item = {...item, status: EditStatus.DELETED};
+                    item.setStatus(EditStatus.DELETED);
                 }
                 return item;
             });
@@ -130,7 +132,7 @@ function ImageEditor({open, setOpen, images, setImages}) {
     useEffect(()=> {
         let tempState = [...editedImages];
         for (let image of newImages) {
-            tempState.push(new ImageMetaData(URL.createObjectURL(image), ImageType.NEW));
+            tempState.push(new ImageMetaData(image.name, URL.createObjectURL(image), ImageType.NEW));
         }
         setEditedImages(tempState);
     }, [newImages]);

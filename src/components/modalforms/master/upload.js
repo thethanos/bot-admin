@@ -1,4 +1,5 @@
 import { Status } from "../../../utils/common.js";
+import { getAddedImages, getDeletedImages, getEditedImages, getCroppedImage, getImage } from "../../../utils/images.js";
 
 export async function uploadUserData(id, state, action) {
     
@@ -22,21 +23,55 @@ export async function uploadUserData(id, state, action) {
     if (response.status !== Status.CREATED && response.status !== Status.OK) {
         throw response.error;
     }
-    /*
-    const master_id = await response.json().id;
-    for (let image of state.images.values) {
-        const formData = new FormData();
-        formData.append("file", image);
-        fetch(`https://bot-dev-domain.com:1444/masters/images/${master_id}`, {
-                method: "POST",
-                body: formData,
-        })
-        .catch(err => {
-            console.log("uploadUserData: ", err);
-        })
-    }*/
+
+    const json = await response.json();
+    return json.id;
 }
 
-export async function uploadUserImages(images) {
-    console.log(images);
+export function uploadUserImages(id, images) {
+
+    let toDelete = getDeletedImages(images);
+    let toUpdate = getEditedImages(images);
+    let toUpload = getAddedImages(images);
+
+    for (let image of toDelete) {
+        fetch(`https://bot-dev-domain.com:1444/masters/${id}/images/${image.name}`, {
+            method: "DELETE"
+        })
+        .catch(err => {
+            console.log("delete image: ", err);
+        })
+    }
+
+    let updatePromises = []
+    for (let image of toUpdate) {
+        getCroppedImage(image.url, image.croppedAreaPixels)
+        .then(blob => {
+            let formData = new FormData();
+            formData.append("file", blob);
+            updatePromises.push(fetch(`https://bot-dev-domain.com:1444/masters/${id}/images/${image.name}`, {
+                method: "PUT",
+                body: formData,
+            }));
+        })
+    }
+    Promise.all(updatePromises).catch(err => {
+        console.log("update images: ", err);
+    })
+
+    let uploadPromises = [];
+    for (let image of toUpload) {
+        getImage(image.url)
+        .then(blob => {
+            let formData = new FormData();
+            formData.append("file", blob);
+            uploadPromises.push(fetch(`https://bot-dev-domain.com:1444/masters/${id}/images`, {
+                method: "POST",
+                body: formData,
+            }));
+        })
+    }
+    Promise.all(uploadPromises).catch(err => {
+        console.log("upload images: ", err);
+    });
 }
