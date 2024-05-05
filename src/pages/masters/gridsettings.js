@@ -14,6 +14,12 @@ export const getGridStyle = (colors) => {
         "& .MuiDataGrid-cell": {
             border: "none"
         },
+        "& .MuiDataGrid-cell:focus-within": {
+            outline: "none"
+        },
+        "& .MuiDataGrid-columnHeader:focus-within": {
+            outline: "none"
+        },
         "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
             border: "none"
