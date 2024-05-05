@@ -63,7 +63,7 @@ function MasterForm({ currentMasterID, actionState, setActionState }) {
             { imageEditOpen && <ImageEditor 
                 open={imageEditOpen} 
                 setOpen={setImageEditOpen}
-                images={imagesState}
+                images={[...imagesState]}
                 setImages={setImagesState}
                 />
             }
@@ -107,7 +107,7 @@ function MasterForm({ currentMasterID, actionState, setActionState }) {
                         <Button 
                             sx={{color: "white"}} 
                             onClick={()=>setImageEditOpen(true)}
-                        >Выберите фото</Button>
+                        >{imagesState.length === 0?"Выберите фото":`Выбрано ${imagesState.length} фото`}</Button>
                         <TextField
                             fullWidth
                             variant="filled"

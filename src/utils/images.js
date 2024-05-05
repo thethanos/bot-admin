@@ -41,13 +41,13 @@ export class ImageMetaData {
 
 export function getEditedImages(images) {
     return images.filter((image) => {
-        return image.status === EditStatus.EDITED && image.type !== ImageType.NEW;
+        return image.status === EditStatus.EDITED;
     })
 }
 
 export function getAddedImages(images) {
     return images.filter((image) => {
-        return image.type === ImageType.NEW;
+        return image.type === ImageType.NEW && image.status !== EditStatus.EDITED;
     });
 }
 
