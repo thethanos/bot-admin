@@ -10,7 +10,7 @@ export const ImageType = {
 }
 
 export class ImageMetaData {
-    constructor(name, url, type = ImageType.FROM_SERVER, status = EditStatus.DEFAULT) {
+    constructor(name = "", url = "", type = ImageType.FROM_SERVER, status = EditStatus.DEFAULT) {
         this.name = name;
         this.url = url;
         this.croppedArea = { x: 0, y: 0, height: 0, width: 0};
@@ -38,6 +38,14 @@ export class ImageMetaData {
     setCroppedArea(croppedArea) { this.croppedArea = croppedArea; }
     setCroppedAreaPixels(croppedPixels) { this.croppedAreaPixels = croppedPixels; }
 };
+
+export function deepCopyImages(images) {
+    return images.map((image)=> {
+        let copy = new ImageMetaData();
+        copy.clone(image);
+        return copy;
+    });
+}
 
 export function getEditedImages(images) {
     return images.filter((image) => {

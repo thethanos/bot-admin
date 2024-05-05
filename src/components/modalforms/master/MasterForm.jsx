@@ -23,6 +23,7 @@ import { Mode, validate } from "./validator";
 import { uploadUserData, uploadUserImages } from "./upload";
 import useLoadMasterDataHook from "../../../hooks/useLoadMasterDataHook";
 import useLoadMasterImagesHook from "../../../hooks/useLoadMasterImagesHook";
+import { deepCopyImages } from "../../../utils/images.js";
 
 
 function MasterForm({ currentMasterID, actionState, setActionState }) {
@@ -31,8 +32,8 @@ function MasterForm({ currentMasterID, actionState, setActionState }) {
 
     const mode = currentMasterID.length > 0?Mode.EDIT:Mode.CREATE;
 
-    const [state, dispatch] = useLoadMasterDataHook(currentMasterID);
-    const [imagesState, setImagesState] = useLoadMasterImagesHook(currentMasterID);
+    const [isLoadingData, state, dispatch] = useLoadMasterDataHook(currentMasterID);
+    const [isLoadingImages, imagesState, setImagesState] = useLoadMasterImagesHook(currentMasterID);
     const [imageEditOpen, setImageEditOpen] = useState(false);
 
     const onSave = () => {
@@ -60,14 +61,14 @@ function MasterForm({ currentMasterID, actionState, setActionState }) {
     
     return (
         <React.Fragment>
-            { imageEditOpen && <ImageEditor 
+            { imageEditOpen && !isLoadingImages && <ImageEditor 
                 open={imageEditOpen} 
                 setOpen={setImageEditOpen}
-                images={[...imagesState]}
+                images={deepCopyImages(imagesState)}
                 setImages={setImagesState}
                 />
             }
-            <Dialog open={actionState.open} fullWidth>
+            <Dialog open={actionState.open && !isLoadingData} fullWidth>
             <Box sx={{ background: colors.primary[400] }}>
                 <DialogTitle>Мастер</DialogTitle>
                 <DialogContent>
