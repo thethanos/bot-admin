@@ -1,20 +1,19 @@
-import React from "react";
 import { useState } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import CategoryForm from "../../components/modalforms/CategoryForm";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/global/Header";
-import { getColors } from "../../services/providers/theme";
 import { Actions } from "../../utils/common";
 import useLoadGridDataHook from "../../hooks/useLoadGridDataHook";
-import { columns, getGridStyle } from "./gridsettings.js";
+import { GridStyler } from "../../components/GridStyler";
 
+const columns = [
+    {field: "id"},
+    {field: "name", headerName: "Категория", flex: 1}
+];
 
 function Categories() {
-    const theme = useTheme();
-    const colors = getColors(theme.palette.mode);
-
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
     const [category, setCategory] = useState({});
@@ -60,15 +59,15 @@ function Categories() {
     return(
         <Box m="20px">
             <Header title="Категория" subtitle="Список категорий услуг доступных в системе" />
-            <Box height="75vh" sx={getGridStyle(colors)}>
-                { tbActionState.open && 
-                    <CategoryForm 
-                        category={category} 
-                        setCategory={setCategory} 
-                        actionState={tbActionState} 
-                        setActionState={setTbActionState}
-                    />
-                }
+            { tbActionState.open && 
+                <CategoryForm 
+                    category={category} 
+                    setCategory={setCategory} 
+                    actionState={tbActionState} 
+                    setActionState={setTbActionState}
+                />
+            }
+            <GridStyler>
                 <DataGrid
                     columns={columns}
                     rows={categories} 
@@ -79,7 +78,7 @@ function Categories() {
                     }}
                     rowSelectionModel={rowSelectionModel}
                 />
-            </Box>
+            </GridStyler>
         </Box>
     );
 };

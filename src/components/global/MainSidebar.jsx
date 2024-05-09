@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import 'react-pro-sidebar/dist/css/styles.css';
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { getColors } from "../../services/providers/theme";
@@ -51,31 +50,38 @@ function Item({title, to, icon, selected, setSelected}) {
             style={{color: colors.grey[100]}}
             onClick={() => setSelected(title)}
             icon={icon}
+            component={<Link to={to}/>}
         >
             <Typography>{title}</Typography>
-            <Link to={to}/>
         </MenuItem>
     );
 }
 
-function Sidebar() {
+function MainSidebar() {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
     const style = {
-        "& .pro-sidebar-inner": {
-            background: `${colors.primary[400]} !important`,
+        "& .ps-sidebar-root": {
+            height: "100%",
+            border: "none",
+            minWidth: "270px"
         },
-        "& .pro-icon-wrapper": {
+        "& .ps-sidebar-container": {
+            background: `${colors.primary[400]}`
+        },
+        "& .ps-menuitem-root": {
+            height: "45px"
+        },
+        "& .ps-menu-button": {
+            padding: "5px 35px 5px 20px !important",
+            margin: "0px"
+        },
+        "& .ps-menu-button:hover": {
+            color: "#868dfb !important", 
             backgroundColor: "transparent !important",
         },
-        "& .pro-inner-item": {
-            padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-            color: "#868dfb !important", 
-        },
-        "& .pro-menu-item.active": {
+        "& .ps-menu-button.ps-active": {
             color: "#6870fa !important",
         }
     };
@@ -85,7 +91,9 @@ function Sidebar() {
 
     return(
         <Box sx={style}>
-            <ProSidebar collapsed={isCollapsed} style={{listStyle: "none"}}>
+            <Sidebar 
+                collapsed={isCollapsed} 
+            >
                 <Menu>
                     <MenuItem 
                         onClick={()=> setCollapsed(!isCollapsed)}
@@ -112,7 +120,7 @@ function Sidebar() {
                         )}
                     </MenuItem>
                     {!isCollapsed && (
-                        <Box mb="25px">
+                        <Box mb="25px" mt="20px">
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <img
                                     alt="profile-pic"
@@ -143,9 +151,9 @@ function Sidebar() {
                         }
                     </Box>
                 </Menu>
-            </ProSidebar>
+            </Sidebar>
         </Box>
     );
 };
 
-export default Sidebar;
+export default MainSidebar;

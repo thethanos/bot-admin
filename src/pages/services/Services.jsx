@@ -1,20 +1,21 @@
-import React from "react";
 import { useState } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-
 import Header from "../../components/global/Header";
 import Toolbar from "../../components/GridToolbar";
-import { getColors } from "../../services/providers/theme";
 import { Actions } from "../../utils/common";
 import ServiceForm from "../../components/modalforms/ServiceForm";
 import useLoadGridDataHook from "../../hooks/useLoadGridDataHook";
-import { columns, getGridStyle } from "./gridsettings.js";
+import { GridStyler } from "../../components/GridStyler";
+
+const columns = [
+    {field: "id"},
+    {field: "catID"},
+    {field: "catName", headerName: "Категория", flex: 1},
+    {field: "name", headerName: "Услуга", flex: 1},
+];
 
 function Services() {
-    const theme = useTheme();
-    const colors = getColors(theme.palette.mode);
-
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
     const [catState, setCatState] = useState({category: {value: 0}});
@@ -63,17 +64,17 @@ function Services() {
     return(
         <Box m="20px">
             <Header title="Услуга" subtitle="Список услуг доступных в системе" />
-            <Box height="75vh" sx={getGridStyle(colors)}>
-                { tbActionState.open && 
-                    <ServiceForm 
-                        catState={catState} 
-                        setCatState={setCatState} 
-                        service={service}
-                        setService={setService} 
-                        actionState={tbActionState} 
-                        setActionState={setTbActionState} 
-                    />
-                }   
+            { tbActionState.open && 
+                <ServiceForm 
+                    catState={catState} 
+                    setCatState={setCatState} 
+                    service={service}
+                    setService={setService} 
+                    actionState={tbActionState} 
+                    setActionState={setTbActionState} 
+                />
+            }  
+            <GridStyler> 
                 <DataGrid
                     columns={columns}
                     rows={services}
@@ -84,7 +85,7 @@ function Services() {
                     }}
                     rowSelectionModel={rowSelectionModel}
                 />
-            </Box>
+            </GridStyler>
         </Box>
     );
 };

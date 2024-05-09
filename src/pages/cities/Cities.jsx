@@ -1,20 +1,19 @@
-import React from "react";
 import { useState } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import CityForm from "../../components/modalforms/CityForm";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/global/Header";
-import { getColors } from "../../services/providers/theme";
 import { Actions } from "../../utils/common";
 import useLoadGridDataHook from "../../hooks/useLoadGridDataHook";
-import { columns, getGridStyle } from "./gridsettings.js";
+import { GridStyler } from "../../components/GridStyler";
 
+const columns = [
+    {field: "id"},
+    {field: "name", headerName: "Город", flex: 1}
+];
 
 function Cities() {
-    const theme = useTheme();
-    const colors = getColors(theme.palette.mode);
-
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
     const [city, setCity] = useState({});
@@ -60,15 +59,15 @@ function Cities() {
     return(
         <Box m="20px">
             <Header title="Город" subtitle="Список городов доступных в системе" />
-            <Box height="75vh" sx={getGridStyle(colors)}>
-                { tbActionState.open && 
-                    <CityForm 
-                        city={city} 
-                        setCity={setCity} 
-                        actionState={tbActionState} 
-                        setActionState={setTbActionState} 
-                    />
-                }
+            { tbActionState.open && 
+                <CityForm 
+                    city={city} 
+                    setCity={setCity} 
+                    actionState={tbActionState} 
+                    setActionState={setTbActionState} 
+                />
+            }
+            <GridStyler>
                 <DataGrid
                     columns={columns}
                     rows={cities} 
@@ -79,7 +78,7 @@ function Cities() {
                     }}
                     rowSelectionModel={rowSelectionModel}
                 />
-            </Box>
+            </GridStyler>
         </Box>
     );
 };

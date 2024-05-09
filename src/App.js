@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { ColorModeContext, useMode } from "./services/providers/theme";
 
 import Topbar from "./components/global/Topbar";
-import Sidebar from "./components/global/Sidebar";
+import MainSidebar from "./components/global/MainSidebar";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import Masters from "./pages/masters/Masters";
@@ -19,7 +19,7 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <div className="app">
-                    <Sidebar />
+                    <MainSidebar />
                     <main className="content">
                         <Topbar />
                         <Routes>

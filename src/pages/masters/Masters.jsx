@@ -1,20 +1,22 @@
-import React from "react";
 import { useState } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { getColors } from "../../services/providers/theme";
 import Toolbar from "../../components/GridToolbar";
 import Header from "../../components/global/Header";
 import { Actions } from "../../utils/common";
 import MasterForm from "../../components/modalforms/master/MasterForm";
 import useLoadGridDataHook from "../../hooks/useLoadGridDataHook";
-import { columns, getGridStyle } from "./gridsettings.js";
+import { GridStyler } from "../../components/GridStyler";
 
+const columns = [
+    { field: "id"},
+    { field: "name", headerName: "ФИО", flex: 1},
+    { field: "cityName", headerName: "Город", flex: 1},
+    { field: "servCatName", headerName: "Услуги", flex: 1},
+    { field: "regDate", headerName: "Дата", flex: 0.5}
+];
 
 function Masters() {
-    const theme = useTheme();
-    const colors = getColors(theme.palette.mode);
-
     const [tbActionState, setTbActionState] = useState({open: false, action: Actions.UPDATE});
     const [currentMasterID, setCurrentMasterID] = useState("");
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
@@ -57,14 +59,14 @@ function Masters() {
     return (
         <Box m="20px">
             <Header title="Мастер" subtitle="Список мастеров зарегистрированных в системе" />
-            <Box height="75vh" sx={getGridStyle(colors)}>
-                { tbActionState.open && 
-                    <MasterForm
-                        currentMasterID={currentMasterID}
-                        actionState={tbActionState} 
-                        setActionState={setTbActionState} 
-                    /> 
-                }
+            { tbActionState.open && 
+                <MasterForm
+                    currentMasterID={currentMasterID}
+                    actionState={tbActionState} 
+                    setActionState={setTbActionState} 
+                /> 
+            }
+            <GridStyler>
                 <DataGrid
                     columns={columns}
                     rows={masters}
@@ -75,7 +77,7 @@ function Masters() {
                     }}
                     rowSelectionModel={rowSelectionModel}
                 />
-            </Box>
+            </GridStyler>
         </Box>
     );
 };
