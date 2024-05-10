@@ -57,7 +57,7 @@ function Item({title, to, icon, selected, setSelected}) {
     );
 }
 
-function MainSidebar() {
+function MainSidebar({isCollapsed, setCollapsed}) {
     const theme = useTheme();
     const colors = getColors(theme.palette.mode);
 
@@ -86,7 +86,6 @@ function MainSidebar() {
         }
     };
 
-    const [isCollapsed, setCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
 
     return(

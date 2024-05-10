@@ -13,6 +13,7 @@ body,
 .app {
     display: flex;
     position: relative;
+    overflow: hidden;
 }
 
 ::-webkit-scrollbar {
